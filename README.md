@@ -3,7 +3,7 @@
 Minimal structure for bootstrapping Data Science projects
 
 
-```
+```bash
 # get template
 curl -O -L https://github.com/ploomber/template/archive/master.zip
 
