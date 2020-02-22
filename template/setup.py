@@ -1,8 +1,9 @@
 """
 Minimal setup.py
 
+Built using: https://github.com/ploomber/template
 setup.py reference: https://setuptools.readthedocs.io/en/latest/setuptools.html
-based on: https://blog.ionelmc.ro/2014/05/25/python-packaging/
+More on pkg structure: https://blog.ionelmc.ro/2014/05/25/python-packaging/
 """
 import io
 import re
