@@ -10,3 +10,9 @@ cd tmp
 curl -O -L https://github.com/ploomber/template/archive/master.zip
 unzip master.zip
 rm -f master.zip
+
+bash template-master/install.sh
+
+cd ..
+
+rm -rf tmp
