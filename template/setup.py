@@ -44,9 +44,6 @@ setup(
     # Include any files in any package with these extensions
     package_data={"": ["*.txt", "*.rst", "*.sql", "*.ipynb"]},
 
-    data_files=[
-        ('package_name_environment', ['environment.yml']),
-    ],
     # Minimum needed to execute this project, this subset should be enough
     # to run the pipeline in production
     install_requires=[],
@@ -57,7 +54,7 @@ setup(
         'test': ['pytest', 'nox'],
         # For developers (e.g. train a new model, run exploratory
         # notebooks)
-        'dev': [],
+        'dev': ['pyyaml'],
         # To build documentation
         'doc': []
     },

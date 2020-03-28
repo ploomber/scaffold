@@ -16,3 +16,10 @@ bash template-master/install.sh
 # delete zip file
 rm -f master.zip
 ```
+
+## Features
+
+* `setup.py` following best practices, with commends for extensibility, install your pipeline using `pip install`
+* Pre-configured testing suite, a simple test is provided to check that your package is installable via `pip install`
+* Environment reproducibiliy is also tested using `nox`
+* Sample `README.md` with instructions for development, testing and distribution
