@@ -1,0 +1,17 @@
+# Although most dependencies can be easily be installed using pip, doing it
+# via conda provides a higher level of isolation and reproducibility, since
+# conda handles non-Python dependencies that pip cannot. These non-Python
+# dependencies appear in libraries that have C/C++ bindings such as numpy,
+# tensorflow or pytorch. However, not all pypi packages are available via
+# conda, so we have to use both. This conda environment.yml file contains a
+# list of dependencies that should be installed via conda, the rest can be
+# installed using pip, for details on using pip inside a conda env see this:
+# https://www.anaconda.com/using-pip-in-a-conda-environment/
+name: package_name
+
+dependencies:
+  # TODO: define your supported python version
+  - python=3.7
+  # NOTE: keep this list up-to-date, some packages that are usually more
+  # reliable via conda install: numpy, tensorflow, pytorch, pyscopg2.
+  # Basically packages that have non-Python dependencies

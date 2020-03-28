@@ -15,15 +15,15 @@ fi
 
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    sed -i '' "s/{{package_name}}/$PROJECT_NAME/g" template-master/template/setup.py
-    sed -i '' "s/{{package_name}}/$PROJECT_NAME/g" template-master/template/README.md
+    sed -i '' "s/package_name/$PROJECT_NAME/g" template-master/template/setup.py
+    sed -i '' "s/package_name/$PROJECT_NAME/g" template-master/template/README.md
 else
-    sed -i "s/{{package_name}}/$PROJECT_NAME/g" template-master/template/setup.py
-    sed -i "s/{{package_name}}/$PROJECT_NAME/g" template-master/template/README.md
+    sed -i "s/package_name/$PROJECT_NAME/g" template-master/template/setup.py
+    sed -i "s/package_name/$PROJECT_NAME/g" template-master/template/README.md
 fi
 
 
-mv "template-master/template/src/{{package_name}}" "template-master/template/src/$PROJECT_NAME"
+mv "template-master/template/src/package_name" "template-master/template/src/$PROJECT_NAME"
 
 mv template-master/template/* template-master/
 
