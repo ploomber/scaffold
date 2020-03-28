@@ -1,3 +1,4 @@
+import os
 import shutil
 import re
 from pathlib import Path
@@ -50,4 +51,19 @@ for file in Path(*root).glob('*'):
 # delete extra files
 shutil.rmtree(str(Path(*root)))
 
-# rename root folder
+# rename current folder
+print('Renaming project root folder to "%s"' % package_name)
+Path(root[0]).rename(package_name)
+
+
+# delete files that are part of the root folder
+to_remove = ['LICENSE', 'test.sh', 'install.py', 'template/']
+
+for path in to_remove:
+    print('Removing %s' % path)
+    if path.endswith('/'):
+        shutil.rmtree(path)
+    else:
+        os.remove(path)
+
+print('Done. Check out README.md for next steps.')
