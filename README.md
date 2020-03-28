@@ -1,9 +1,27 @@
 # template
 
-
 Minimal structure for bootstrapping Data Science projects
 
+## Features
+
+* `setup.py` following best practices, with commends for extensibility, install your pipeline using `pip install`
+* Pre-configured testing suite, a simple test is provided to check that your package is installable via `pip install`
+* Environment reproducibiliy is also tested using `nox`
+* Sample `README.md` with instructions for development, testing and distribution
+* Sample gitignore
+
 ## Usage
+
+### Using it as a Github template
+
+1. Click on "use this template"
+2. Create the repo under your account
+3. Clone your repo `git clone https://github.com/{username}/{repo_name}.git`
+4. Execute install script `python ` TODO: make it work from a clone
+5. Commit changes
+
+
+### From the terminal
 
 ```bash
 # move to a folder where you want to store your project
@@ -23,11 +41,3 @@ rm -f master.zip
 ```
 
 ## Testing
-
-## Features
-
-* `setup.py` following best practices, with commends for extensibility, install your pipeline using `pip install`
-* Pre-configured testing suite, a simple test is provided to check that your package is installable via `pip install`
-* Environment reproducibiliy is also tested using `nox`
-* Sample `README.md` with instructions for development, testing and distribution
-* Sample gitignore

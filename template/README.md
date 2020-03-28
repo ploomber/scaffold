@@ -1,8 +1,12 @@
 # package_name
 
 TODO:
-    1. Modify `environment.yml` with your supported Python version
-    2. [add data files to gitignore] but let the user decide
+1. Modify `environment.yml` with your supported Python version
+2. Review dependencies to install via conda
+3. Install conda environment `conda env create -f environment.yml`
+4. Activate environment `conda activate package_name`
+5. Install your package in editable mode, with all depdencies inside the conda environment `pip install --editable ".[all]"`
+6. [add data files to gitignore] but let the user decide
 
 ## Develop
 

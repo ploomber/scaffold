@@ -41,6 +41,21 @@ def read(*names, **kwargs):
     ).read()
 
 
+# NOTE: keep these lists updated as you add more dependencies to your project
+# if you rather have any dependency installed via conda, add it here and in
+# environment.yml
+
+
+# Minimum needed to execute this project, this subset should be enough
+# to run the pipeline in production
+REQUIRES = []
+# Extra packages for running tests, install with: pip install ".[test]"
+REQUIRES_TEST = ['pytest', 'nox']
+# For developers (e.g. train a new model, run exploratory notebooks)
+REQUIRES_DEV = ['pyyaml']
+# To build documentation
+REQUIRES_DOC = []
+
 setup(
     name='package_name',
     version=VERSION,
@@ -53,19 +68,13 @@ setup(
     # Include any files in any package with these extensions
     package_data={"": ["*.txt", "*.rst", "*.sql", "*.ipynb"]},
 
-    # Minimum needed to execute this project, this subset should be enough
-    # to run the pipeline in production
-    install_requires=[],
+    install_requires=REQUIRES,
     # Extra dependencies, only needed in specific cases
     extras_require={
-        # Extra packages for running tests, install with:
-        # pip install ".[test]"
-        'test': ['pytest', 'nox'],
-        # For developers (e.g. train a new model, run exploratory
-        # notebooks)
-        'dev': ['pyyaml'],
-        # To build documentation
-        'doc': []
+        'test': REQUIRES_TEST,
+        'dev': REQUIRES_DEV,
+        'doc': REQUIRES_DOC,
+        'all': REQUIRES_TEST + REQUIRES_DEV + REQUIRES_DOC
     },
     # if your pipeline requires packages at setup time (e.g. creates C
     # extensions), you also need to provide setup_requires, see setuptools
