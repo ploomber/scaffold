@@ -1,10 +1,19 @@
 """
 Minimal setup.py
 
+References
+----------
 Built using: https://github.com/ploomber/template
 setup.py reference: https://setuptools.readthedocs.io/en/latest/setuptools.html
 More on pkg structure: https://blog.ionelmc.ro/2014/05/25/python-packaging/
 Sample setup.py with explanations: https://github.com/pypa/sampleproject/blob/master/setup.py
+
+Notes
+-----
+* Only files under src/ (and a few special files) are expected requirements for
+    deployment, everything else is expected for development/testing purposes,
+    hence not included in a source or built distribution
+
 """
 import io
 import re

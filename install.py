@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 print("""
@@ -12,6 +13,7 @@ package_name = input('Package name: ')
 root = ('template-master', 'template')
 
 # TODO: validate package name
+re.match(r'')
 
 files_to_replace = [
     ('setup.py', ),
