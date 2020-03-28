@@ -18,7 +18,6 @@ while not re.match(r'^[\w]+$', package_name) or package_name[0].isnumeric():
     package_name = input('Package name: ')
 
 root = ('template-master', 'template')
-root = ('template', )
 
 files_to_replace = [
     ('setup.py', ),

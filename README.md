@@ -3,6 +3,7 @@
 
 Minimal structure for bootstrapping Data Science projects
 
+## Usage
 
 ```bash
 # get template
@@ -16,6 +17,8 @@ python template-master/install.py
 # delete zip file
 rm -f master.zip
 ```
+
+## Testing
 
 ## Features
 

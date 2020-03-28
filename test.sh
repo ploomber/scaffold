@@ -4,15 +4,15 @@ conda create --name test python=3 --yes
 
 conda activate test
 
-mkdir tmp
-cd tmp
+# list currently tracked files and zip them, this will keep the tree
+# structure
+git ls-tree -r --name-only HEAD | zip -@ master.zip
 
-curl -O -L https://github.com/ploomber/template/archive/master.zip
+mkdir -p tmp/template-master
+mv master.zip tmp/template-master
+cd tmp/template-master/
 unzip master.zip
-rm -f master.zip
-
-bash template-master/install.sh
-
+rm -rf master.zip
 cd ..
 
-rm -rf tmp
+python template-master/install.py
