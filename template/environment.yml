@@ -7,6 +7,8 @@
 # list of dependencies that should be installed via conda, the rest can be
 # installed using pip, for details on using pip inside a conda env see this:
 # https://www.anaconda.com/using-pip-in-a-conda-environment/
+# tl; dr; whenever you add a dependency here, re-create the environment,
+# there are a few quirks when using conda then pip and then conda again
 name: package_name
 
 dependencies:
