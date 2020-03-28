@@ -1,5 +1,8 @@
 # package_name
 
+TODO:
+    1. Modify `environment.yml` with your supported Python version
+
 ## Develop
 
 Once you cloned the repo:
