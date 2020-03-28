@@ -16,3 +16,10 @@ rm -rf master.zip
 cd ..
 
 python template-master/install.py
+
+pip install ".[test]"
+
+pytest
+
+
+

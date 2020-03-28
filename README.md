@@ -6,6 +6,10 @@ Minimal structure for bootstrapping Data Science projects
 ## Usage
 
 ```bash
+# move to a folder where you want to store your project
+mkdir my_new_project
+cp my_new_project
+
 # get template
 curl -O -L https://github.com/ploomber/template/archive/master.zip
 
