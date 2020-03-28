@@ -23,3 +23,4 @@ rm -f master.zip
 * Pre-configured testing suite, a simple test is provided to check that your package is installable via `pip install`
 * Environment reproducibiliy is also tested using `nox`
 * Sample `README.md` with instructions for development, testing and distribution
+* Sample gitignore
