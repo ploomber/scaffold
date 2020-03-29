@@ -8,6 +8,7 @@ echo 'zipping files...'
 git ls-tree -r --name-only HEAD | zip -@ master.zip
 
 echo 'Moving files to tmp/'
+rm -rf tmp/
 mkdir -p tmp/template-master
 mv master.zip tmp/template-master
 cd tmp/template-master/

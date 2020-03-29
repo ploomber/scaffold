@@ -29,9 +29,11 @@ if args.name is None:
               % package_name)
         package_name = input('Package name: ')
 else:
-    if not is_valid_name(args.name):
+    package_name = args.name
+
+    if not is_valid_name(package_name):
         raise ValueError('"%s" is not a valid package identifier, '
-                         'choose another.' % args.name)
+                         'choose another.' % package_name)
 
 
 root = ('template-master', 'template')
