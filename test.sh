@@ -5,6 +5,7 @@ conda activate test
 
 # list currently tracked files and zip them, this will keep the tree structure
 echo 'zipping files...'
+rm -f master.zip
 git ls-tree -r --name-only HEAD | zip -@ master.zip
 
 echo 'Moving files to tmp/'
