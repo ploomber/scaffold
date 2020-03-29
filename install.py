@@ -1,20 +1,38 @@
 import shutil
 import re
 from pathlib import Path
+import argparse
+
+parser = argparse.ArgumentParser(description='Install template')
+parser.add_argument('--name', type=str, help='Package name', default=None)
+args = parser.parse_args()
 
 print("""
 Python packages should also have short, all-lowercase names,
 although the use of underscores is discouraged."
 
 Source: https://www.python.org/dev/peps/pep-0008/
+
 """)
 
-package_name = input('Package name: ')
 
-while not re.match(r'^[\w]+$', package_name) or package_name[0].isnumeric():
-    print('"%s" is not a valid package identifier, choose another.'
-          % package_name)
+def is_valid_name(package_name):
+    return (re.match(r'^[\w]+$', package_name)
+            and not package_name[0].isnumeric())
+
+
+if args.name is None:
     package_name = input('Package name: ')
+
+    while not is_valid_name(package_name):
+        print('"%s" is not a valid package identifier, choose another.'
+              % package_name)
+        package_name = input('Package name: ')
+else:
+    if not is_valid_name(args.name):
+        raise ValueError('"%s" is not a valid package identifier, '
+                         'choose another.' % args.name)
+
 
 root = ('template-master', 'template')
 
