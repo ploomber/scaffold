@@ -36,6 +36,8 @@ pytest
 
 ## Distribution
 
+TODO: add changelog edit git tag instructions
+
 To generate a [wheel](https://packaging.python.org/glossary/) use the standard command:
 
 ```
