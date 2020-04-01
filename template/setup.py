@@ -66,14 +66,16 @@ setup(
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
 
     # Include any files in any package with these extensions
+    # NOTE: for these files to be included, they have to be inside a proper
+    # module (there has to be an __init__.py file)
     package_data={"": ["*.txt", "*.rst", "*.sql", "*.ipynb"]},
 
     install_requires=REQUIRES,
     # Extra dependencies, only needed in specific cases
     extras_require={
-        'test': REQUIRES_TEST,
         'dev': REQUIRES_DEV,
-        'doc': REQUIRES_DOC,
+        'test': REQUIRES_DEV + REQUIRES_TEST,
+        'doc': REQUIRES_DEV + REQUIRES_DOC,
         'all': REQUIRES_TEST + REQUIRES_DEV + REQUIRES_DOC
     },
     # if your pipeline requires packages at setup time (e.g. creates C

@@ -1,3 +1,6 @@
+"""
+Installation script
+"""
 import shutil
 import re
 from pathlib import Path

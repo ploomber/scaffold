@@ -8,17 +8,26 @@ TODO:
 5. Install your package in editable mode, with all depdencies inside the conda environment `pip install --editable ".[all]"`
 6. [add data files to gitignore] but let the user decide
 
-## Develop
+## Setup development environment
 
 Once you cloned the repo:
 
 ```sh
-pip install ".[dev]"
+# this will create a conda env called "package_name", will replace
+# an existing one if any
+conda env create --file environment.yml --force
+
+# install the package in editable mode to reflect source code changes
+pip install --editable ".[all]"
+
+# test installation
+pytest
 ```
 
 For running tests you also need: `pip install ".[test]"`
 
 For building documentation: `pip install ".[doc]"`
+
 
 ## Testing
 
@@ -28,11 +37,6 @@ For building documentation: `pip install ".[doc]"`
 nox
 ```
 
-`nox` will create a temporary conda environment, if you want to run tests in the current Python environment:
-
-```
-pytest
-```
 
 ## Distribution
 
