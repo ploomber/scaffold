@@ -45,7 +45,9 @@ files_to_replace = [
     ('setup.py', ),
     ('README.md', ),
     ('environment.yml', ),
-    ('tests', 'test_import_pkg.py')
+    ('tests', 'test_import_pkg.py'),
+    ('distribute', 'main', 'Procfile'),
+    ('distribute', 'main', 'build.sh')
 ]
 
 

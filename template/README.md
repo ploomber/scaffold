@@ -10,19 +10,7 @@ TODO:
 
 ## Setup development environment
 
-Once you cloned the repo:
-
-```sh
-# this will create a conda env called "package_name", will replace
-# an existing one if any
-conda env create --file environment.yml --force
-
-# install the package in editable mode to reflect source code changes
-pip install --editable ".[all]"
-
-# test installation
-pytest
-```
+Once you cloned the repo, run `bash setup.sh`, requires conda.
 
 For running tests you also need: `pip install ".[test]"`
 
@@ -45,26 +33,24 @@ TODO: add changelog edit git tag instructions
 To generate a [wheel](https://packaging.python.org/glossary/) use the standard command:
 
 ```
-python setup.py bdist_wheel
+bash distribute/main/build.sh
+
+# zips environment.yml, wheel and setup.sh
 ```
 
-After generating the wheel, update it by adding the `environment.yml` file:
 
-```
-zip -u dist/{wheel_name}.whl environment.yml
-```
 
-### Installing from a wheel
+## Deployment
+
 
 Although the usual `pip install {wheel}.whl` is supported, this project has non-Python dependencies that are better handled via `conda`, the recommended installation procedure is as follows:
 
 ```
-# extract environment.yml
-unzip -p {wheel}.whl environment.yml > environment.yml
-
-# create conda environment
-conda env create -f environment.yml
-
-# install wheel
-pip install {wheel}.whl
+unzip dist-main.zip
+cd dist-main/
+bash setup.sh
 ```
+
+Use the process manager of your choice
+
+

@@ -1,0 +1,1 @@
+pipeline: python -u -m package_name.apps.main > main.log 2>&1
