@@ -1,3 +1,6 @@
+*.whl
+*.zip
+
 # nox
 .nox/
 

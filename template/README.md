@@ -1,5 +1,7 @@
 # package_name
 
+ADD VERSIONEER
+
 TODO:
 1. Modify `environment.yml` with your supported Python version
 2. Review dependencies to install via conda

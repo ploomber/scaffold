@@ -16,6 +16,17 @@ else
     NAME=$1
 fi
 
+if [[ "$1" == "-h" || "$1" == "--help" ]]
+then
+  printf "$(basename $0) ENV_NAME\n"
+  printf "\tCreate (or replace) a conda environment named ENV_NAME. If no\n"
+  printf "\targument is passed, an environment named 'package_name' will be\n"
+  printf "\tcreated. After creation, packages from environment.yml are \n"
+  printf "\tinstalled using conda install, then wheels are installed using\n"
+  printf "\tpip, if there is a setup.py file, it is installed in editable mode.\n"
+  exit 0
+fi
+
 
 G='\e[32m'
 END='\e[0m\n'

@@ -1,3 +1,12 @@
+if [[ "$1" == "-h" || "$1" == "--help" ]]
+then
+  printf "$(basename $0)\n"
+  printf "\tCreate a zip file for deployment. The compressed file includes\n"
+  printf "\tthe wheel, Procfile, environment.yml and setup.sh files\n"
+  exit 0
+fi
+
+
 G='\e[32m'
 END='\e[0m\n'
 
@@ -34,4 +43,4 @@ print "Zipping..."
 zip -r $OUTDIR.zip $OUTDIR
 rm -rf $OUTDIR
 
-print "Done. Generated $OUTDIR.zip"
+print "Done. Zip file: $OUTDIR.zip"
