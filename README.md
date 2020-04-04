@@ -9,6 +9,8 @@ Minimal structure for bootstrapping Data Science projects
 * Environment reproducibiliy is also tested using `nox`
 * Sample `README.md` with instructions for development, testing and distribution
 * Sample gitignore
+* `setup.sh`
+* `build.sh`
 
 ## Usage
 

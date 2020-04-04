@@ -1,4 +1,9 @@
 """
+nox configuration file.
+
+Parses environment.yml to install the declared Python version and dependencies
+via conda, then installs the package.
+
 nox docs: https://nox.thea.codes/en/stable/index.html
 """
 import nox
