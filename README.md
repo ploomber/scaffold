@@ -18,30 +18,43 @@ Minimal structure for bootstrapping Data Science projects
 
 ### Using it as a Github template
 
-1. Click on the green "Use this template" button. [Or click here](https://github.com/ploomber/template/generate)
-2. Follow the instructions for copying the template
-3. Clone your repo `git clone https://github.com/{username}/{repo_name}.git`
-4. Execute install script `python `
-5. Commit changes
+1) Click on the green "Use this template" button. [Or click here](https://github.com/ploomber/template/generate)
 
+2) Follow the instructions for copying the template
+
+3) Clone the repository with the template copy
+
+```sh
+git clone https://github.com/{username}/{repo_name}.git
+cd {repo_name}/
+```
+
+4) Execute install script
+
+```sh
+# will prompt for the project's name
+python install.py
+```
+
+5) Commit changes
+
+```
+git add --all
+git commit -m 'Template applied'
+```
 
 ### From the terminal
 
 ```bash
-# move to a folder where you want to store your project
-mkdir my_new_project
+# get template
+curl -O -L https://github.com/ploomber/template/archive/master.zip my_project/
 cp my_new_project
 
-# get template
-curl -O -L https://github.com/ploomber/template/archive/master.zip
-
-# unzip and run install script (will ask for a project name
-# and a directory with that name will be created)
 unzip master.zip
+
+# will prompt for the project's name
 python template-master/install.py
 
 # delete zip file
 rm -f master.zip
 ```
-
-## Testing
