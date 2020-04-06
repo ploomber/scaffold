@@ -16,14 +16,14 @@ conda create --name test python=3 --yes
 eval "$(conda shell.bash hook)"
 conda activate test
 
-rm -rf tmp/
-git clone https://github.com/ploomber/template tmp/
+rm -rf /tmp/git_clone
+git clone https://github.com/ploomber/template /tmp/git_clone
 git checkout $GIT_HASH
-cd tmp/
+cd /tmp/git_clone
 python install.py --name my_sample_package
 
 # make sure .git is not deleted
 test -d .git
 
 cd ..
-rm -rf tmp/
+rm -rf /tmp/git_clone
