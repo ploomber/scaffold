@@ -81,3 +81,4 @@ for file in Path(*setup_py_parent).glob('*'):
 
 
 print('Deleting %s' % path_to_root)
+shutil.rmtree(str(path_to_root))

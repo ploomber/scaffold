@@ -27,6 +27,3 @@ echo 'Running tests...'
 pytest
 
 echo 'Done.'
-
-
-
