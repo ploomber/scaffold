@@ -13,7 +13,7 @@ parser.add_argument('--name', type=str, help='Package name', default=None)
 args = parser.parse_args()
 
 # infer root folder
-root = Path(sys.argv[0]).resolve().parent / 'template'
+root = (Path(sys.argv[0]).resolve().parent / 'template').parts
 
 path_to_setup = Path(*root, 'setup.py')
 
