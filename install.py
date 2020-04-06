@@ -12,9 +12,9 @@ parser = argparse.ArgumentParser(description='Install template in the '
 parser.add_argument('--name', type=str, help='Package name', default=None)
 args = parser.parse_args()
 
-# infer root folder
-root = (Path(sys.argv[0]).resolve().parent / 'template').parts
-
+path_to_root = Path(sys.argv[0]).resolve().parent
+# infer setup.py location
+setup_py_parent = (path_to_root / 'template').parts
 path_to_setup = Path(*root, 'setup.py')
 
 if not path_to_setup.exists():
@@ -65,23 +65,19 @@ def process_path(path):
 
 
 for file in files_to_replace:
-    path = Path(*(root + file))
+    path = Path(*(setup_py_parent + file))
     print('Adding "%s" in file %s' % (package_name, path))
     process_path(path)
 
 # rename file src/package_name
-target = Path(*root, 'src', package_name)
-Path(*root, 'src', 'package_name').rename(target)
+target = Path(*setup_py_parent, 'src', package_name)
+Path(*setup_py_parent, 'src', 'package_name').rename(target)
 
 # move contents from template/ to the current working directory
-for file in Path(*root).glob('*'):
+for file in Path(*setup_py_parent).glob('*'):
     target = str(file.name)
     print('Moving %s to %s' % (file, target))
     shutil.move(str(file), target)
 
-# delete original folder
-print('Removing %s' % root[0])
-shutil.rmtree(root[0])
 
-# rename current folder
-print('Renaming project root folder to "%s"' % package_name)
+print('Deleting %s' % path_to_root)
