@@ -1,6 +1,13 @@
+# stop if any command fails
+set -e
+
 echo 'creating test conda env...'
 conda remove --name test --all --yes
 conda create --name test python=3 --yes
+
+# we need to initialize conda, see: https://github.com/conda/conda/issues/7980
+eval "$(conda shell.bash hook)"
+
 conda activate test
 
 # list currently tracked files and zip them, this will keep the tree structure
