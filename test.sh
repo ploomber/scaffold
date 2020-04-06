@@ -30,10 +30,17 @@ mv master.zip tmp/template-master
 cd tmp/template-master/
 unzip master.zip
 rm -rf master.zip
-cd ..
+cd $CD_ARG
 
 echo 'Running install.py...'
-python template-master/install.py --name my_sample_package
+if [[ "$CD_ARG" = ".." ]]; then
+    python template-master/install.py --name my_sample_package
+elif [[ "$CD_ARG" = "." ]]; then
+    python install.py --name my_sample_package
+else
+    echo "Invalid argument '$CD_ARG'"
+    exit 1
+fi
 
 echo 'Installing package...'
 pip install ".[test]"
