@@ -9,7 +9,7 @@ import argparse
 parser = argparse.ArgumentParser(description='Install template in the '
                                  'current directory')
 parser.add_argument('--name', type=str, help='Package name', default=None)
-parser.add_argument('--path', type=str,
+parser.add_argument('path', type=str,
                     help='Path to template (folder where setup.py is)',
                     default='template-master/template/')
 args = parser.parse_args()
