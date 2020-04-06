@@ -1,6 +1,7 @@
 """
 Installation script
 """
+import sys
 import shutil
 import re
 from pathlib import Path
@@ -9,16 +10,10 @@ import argparse
 parser = argparse.ArgumentParser(description='Install template in the '
                                  'current directory')
 parser.add_argument('--name', type=str, help='Package name', default=None)
-parser.add_argument('path', type=str,
-                    help='Path to template (folder where setup.py is)',
-                    default='template-master/template/')
 args = parser.parse_args()
 
-if args.path is None:
-    root = ('template-master', 'template')
-else:
-    root = Path(args.path).parts
-
+# infer root folder
+root = Path(sys.argv[0]).resolve().parent / 'template'
 
 path_to_setup = Path(*root, 'setup.py')
 
