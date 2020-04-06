@@ -23,7 +23,7 @@ else:
 path_to_setup = Path(*root, 'setup.py')
 
 if not path_to_setup.exists():
-    raise FileNotFoundError('Could not find a setup.py file located in§ '
+    raise FileNotFoundError('Could not find a setup.py file located in '
                             '%s, verify location' % str(path_to_setup))
 
 print("""
