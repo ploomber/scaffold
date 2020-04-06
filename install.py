@@ -68,7 +68,9 @@ else:
 
 # delete all extra files
 for file in path_to_root.glob('*'):
-    if file.name not in ('template', 'install.py'):
+    # we need template and install.py to set this up, also keep current repo
+    # if any
+    if file.name not in ('template', 'install.py', '.git'):
         print('Deleting %s' % file)
         if file.is_file():
             file.unlink()
