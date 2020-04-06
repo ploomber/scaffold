@@ -1,7 +1,15 @@
+# It is a good practice to leave data files out of version control
+*.csv
+*.tsv
+*.parquet
+*.json
+*.db
+
+# Do not include wheels nor distribution files (generate dby build.sh)
 *.whl
 *.zip
 
-# nox
+# nox temporary data
 .nox/
 
 #####=== IPythonNotebook ===#####

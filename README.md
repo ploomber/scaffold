@@ -1,16 +1,16 @@
-# template
+# Data Science template
 
 [![Build Status](https://travis-ci.org/ploomber/template.svg?branch=master)](https://travis-ci.org/ploomber/template)
 
-Minimal structure for bootstrapping Data Science projects
+Template for Data Science projects.
 
-Requires [miniconda](https://docs.conda.io/en/latest/miniconda.html).
+Requires [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
 
 ## Features
 
 * `setup.py` to easily set up your project as a Python package, no more messing around with `PYTHONPATH`. Install your project using `pip install`
 * `setup.py` follows best practices and sets reasonable defaults, each section is clearly commented
-* Pre-configured testing suite, a sample test is provided to check that your package is installs correctly using `pip install`
+* Pre-configured testing suite, a sample test is provided to check that your project installs correctly using `pip install`
 * Testing suite is triggered using `nox`, which will test your code in a clean conda environment, this ensures environment reproducibiliy. The environment is set up from the `environment.yml` file, which follows conda's specification
 * Sample `README.md` with instructions for development, distribution and deployment
 * `.gitignore` with defaults for Python and Jupyter notebooks
@@ -39,7 +39,7 @@ cd {repo_name}/
 python install.py
 ```
 
-5)
+5) Commit changes
 
 ```
 git add --all

@@ -1,18 +1,6 @@
 # package_name
 
-ADD VERSIONEER
-
-TODO:
-1. Modify `environment.yml` with your supported Python version
-2. Review dependencies to install via conda
-3. Install conda environment `conda env create -f environment.yml`
-4. Activate environment `conda activate package_name`
-5. Install your package in editable mode, with all depdencies inside the conda environment `pip install --editable ".[all]"`
-6. [add data files to gitignore] but let the user decide
-7. Add configuration file, also include it in the zip file
-8. Remember to keep your dependencies updated in setup.py and environment.yml
-
-Requirements: [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
+Requires [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
 
 ## Setup development environment
 
