@@ -8,7 +8,22 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Install template')
 parser.add_argument('--name', type=str, help='Package name', default=None)
+parser.add_argument('--path', type=str,
+                    help='Path to template (folder where setup.py is)',
+                    default='template-master/template/')
 args = parser.parse_args()
+
+if args.path is None:
+    root = ('template-master', 'template')
+else:
+    root = Path(args.path).parts
+
+
+path_to_setup = Path(*root, 'setup.py')
+
+if not path_to_setup.exists():
+    raise FileNotFoundError('Could not find a setup.py file located in§ '
+                            '%s, verify location' % str(path_to_setup))
 
 print("""
 Python packages should also have short, all-lowercase names,
@@ -37,9 +52,6 @@ else:
     if not is_valid_name(package_name):
         raise ValueError('"%s" is not a valid package identifier, '
                          'choose another.' % package_name)
-
-
-root = ('template-master', 'template')
 
 files_to_replace = [
     ('setup.py', ),
