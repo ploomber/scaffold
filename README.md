@@ -4,15 +4,18 @@
 
 Minimal structure for bootstrapping Data Science projects
 
+Requires [miniconda](https://docs.conda.io/en/latest/miniconda.html).
+
 ## Features
 
-* `setup.py` following best practices, with commends for extensibility, install your pipeline using `pip install`
-* Pre-configured testing suite, a simple test is provided to check that your package is installable via `pip install`
-* Environment reproducibiliy is also tested using `nox`
-* Sample `README.md` with instructions for development, testing and distribution
-* Sample gitignore
-* `setup.sh`
-* `build.sh`
+* `setup.py` to easily set up your project as a Python package, no more messing around with `PYTHONPATH`. Install your project using `pip install`
+* `setup.py` follows best practices and sets reasonable defaults, each section is clearly commented
+* Pre-configured testing suite, a sample test is provided to check that your package is installs correctly using `pip install`
+* Testing suite is triggered using `nox`, which will test your code in a clean conda environment, this ensures environment reproducibiliy. The environment is set up from the `environment.yml` file, which follows conda's specification
+* Sample `README.md` with instructions for development, distribution and deployment
+* `.gitignore` with defaults for Python and Jupyter notebooks
+* `setup.sh` script for setting up the project from scratch: build conda environment and install project as a Python package
+* `build.sh` script for generating a zip file that contains everything to deploy the project
 
 ## Usage
 
@@ -36,7 +39,7 @@ cd {repo_name}/
 python install.py
 ```
 
-5) Commit changes
+5)
 
 ```
 git add --all

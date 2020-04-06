@@ -10,6 +10,7 @@ TODO:
 5. Install your package in editable mode, with all depdencies inside the conda environment `pip install --editable ".[all]"`
 6. [add data files to gitignore] but let the user decide
 7. Add configuration file, also include it in the zip file
+8. Remember to keep your dependencies updated in setup.py and environment.yml
 
 Requirements: [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
 
