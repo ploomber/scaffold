@@ -15,7 +15,7 @@ args = parser.parse_args()
 path_to_root = Path(sys.argv[0]).resolve().parent
 # infer setup.py location
 setup_py_parent = (path_to_root / 'template').parts
-path_to_setup = Path(*root, 'setup.py')
+path_to_setup = Path(*setup_py_parent, 'setup.py')
 
 if not path_to_setup.exists():
     raise FileNotFoundError('Could not find a setup.py file located in '
