@@ -54,10 +54,8 @@ curl -O -L https://github.com/ploomber/template/archive/master.zip my_project/
 cp my_new_project
 
 unzip master.zip
+rm -f master.zip
 
 # will prompt for the project's name
 python template-master/install.py
-
-# delete zip file
-rm -f master.zip
 ```
