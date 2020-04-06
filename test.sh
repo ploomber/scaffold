@@ -1,6 +1,14 @@
 # stop if any command fails
 set -e
 
+if [[ -z "$1" ]]
+then
+    echo "Missing argument"
+    exit 1
+fi
+
+CD_ARG=$1
+
 echo 'creating test conda env...'
 conda remove --name test --all --yes
 conda create --name test python=3 --yes

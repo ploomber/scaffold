@@ -12,7 +12,24 @@ parser = argparse.ArgumentParser(description='Install template in the '
 parser.add_argument('--name', type=str, help='Package name', default=None)
 args = parser.parse_args()
 
-path_to_root = Path(sys.argv[0]).resolve().parent
+path_to_install_py = Path(sys.argv[0])
+
+parts = path_to_install_py.relative_to('.').parts
+
+if len(parts) > 2:
+    raise ValueError('This script will set up the template in the current '
+                     'directory. Run this from either install.py parent '
+                     'or one level above')
+elif len(parts) == 2:
+    if len(list(Path('.').glob('*'))) > 1:
+        raise ValueError('You are trying to set up the template in a folder '
+                         'that already has files. This operations will '
+                         'modify files the current directory, clean it first, '
+                         'then run again')
+
+running_in_parent = len(parts) == 2
+
+path_to_root = path_to_install_py.resolve().parent
 # infer setup.py location
 setup_py_parent = (path_to_root / 'template').parts
 path_to_setup = Path(*setup_py_parent, 'setup.py')
@@ -20,16 +37,6 @@ path_to_setup = Path(*setup_py_parent, 'setup.py')
 if not path_to_setup.exists():
     raise FileNotFoundError('Could not find a setup.py file located in '
                             '%s, verify location' % str(path_to_setup))
-
-
-# delete all extra files
-for file in path_to_root.glob('*'):
-    if file.name not in ('template', 'install.py'):
-        print('Deleting %s' % file)
-        if file.is_file():
-            file.unlink()
-        else:
-            shutil.rmtree(str(file))
 
 print("""
 Python packages should also have short, all-lowercase names,
@@ -58,6 +65,16 @@ else:
     if not is_valid_name(package_name):
         raise ValueError('"%s" is not a valid package identifier, '
                          'choose another.' % package_name)
+
+# delete all extra files
+for file in path_to_root.glob('*'):
+    if file.name not in ('template', 'install.py'):
+        print('Deleting %s' % file)
+        if file.is_file():
+            file.unlink()
+        else:
+            shutil.rmtree(str(file))
+
 
 files_to_replace = [
     ('setup.py', ),
@@ -90,5 +107,14 @@ for file in Path(*setup_py_parent).glob('*'):
     shutil.move(str(file), target)
 
 
-print('Deleting %s' % path_to_root)
-shutil.rmtree(str(path_to_root))
+if running_in_parent:
+    print('Deleting %s' % path_to_root)
+    shutil.rmtree(str(path_to_root))
+else:
+    path_to_template = path_to_root / 'template'
+    print('Deleting %s' % path_to_template)
+    shutil.rmtree(str(path_to_template))
+
+    path_to_install_py = path_to_root / 'install.py'
+    print('Deleting %s' % path_to_install_py)
+    path_to_install_py.unlink()
