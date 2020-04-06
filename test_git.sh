@@ -18,8 +18,8 @@ conda activate test
 
 rm -rf /tmp/git_clone
 git clone https://github.com/ploomber/template /tmp/git_clone
-git checkout $GIT_HASH
 cd /tmp/git_clone
+git checkout $GIT_HASH
 python install.py --name my_sample_package
 
 # make sure .git is not deleted
