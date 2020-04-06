@@ -23,3 +23,5 @@ script:
   - bash test.sh .
   # case when install.py is one level down
   - bash test.sh ..
+  # also test when cloning
+  - bash test_git.sh

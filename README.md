@@ -1,5 +1,7 @@
 # template
 
+[![Build Status](https://travis-ci.org/ploomber/template.svg?branch=master)](https://travis-ci.org/ploomber/template)
+
 Minimal structure for bootstrapping Data Science projects
 
 ## Features
@@ -16,10 +18,10 @@ Minimal structure for bootstrapping Data Science projects
 
 ### Using it as a Github template
 
-1. Click on "use this template"
-2. Create the repo under your account
+1. Click on the green "Use this template" button. [Or click here](https://github.com/ploomber/template/generate)
+2. Follow the instructions for copying the template
 3. Clone your repo `git clone https://github.com/{username}/{repo_name}.git`
-4. Execute install script `python ` TODO: make it work from a clone
+4. Execute install script `python `
 5. Commit changes
 
 
