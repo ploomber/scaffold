@@ -21,6 +21,16 @@ if not path_to_setup.exists():
     raise FileNotFoundError('Could not find a setup.py file located in '
                             '%s, verify location' % str(path_to_setup))
 
+
+# delete all extra files
+for file in path_to_root.glob('*'):
+    if file.name not in ('template', 'install.py'):
+        print('Deleting %s' % file)
+        if file.is_file():
+            file.unlink()
+        else:
+            shutil.rmtree(str(file))
+
 print("""
 Python packages should also have short, all-lowercase names,
 although the use of underscores is discouraged."
