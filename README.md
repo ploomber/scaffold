@@ -50,12 +50,11 @@ git commit -m 'Template applied'
 
 ```bash
 # get template
-curl -O -L https://github.com/ploomber/template/archive/master.zip my_project/
-cp my_new_project
-
+curl -O -L https://github.com/ploomber/template/archive/master.zip
 unzip master.zip
-rm -f master.zip
+rm master.zip
 
 # will prompt for the project's name
-python template-master/install.py
+cd template-master/
+python install.py
 ```

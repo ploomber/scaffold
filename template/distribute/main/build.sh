@@ -1,3 +1,6 @@
+set -e
+set -x
+
 if [[ "$1" == "-h" || "$1" == "--help" ]]
 then
   printf "$(basename $0)\n"
