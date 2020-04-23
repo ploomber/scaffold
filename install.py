@@ -80,6 +80,7 @@ for file in path_to_root.glob('*'):
 
 files_to_replace = [
     ('setup.py', ),
+    ('setup.sh', )
     ('README.md', ),
     ('environment.yml', ),
     ('tests', 'test_import_pkg.py'),
