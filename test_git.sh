@@ -1,3 +1,5 @@
+# testing installation when using git clone
+
 set -e
 
 if [[ -z "$1" ]]

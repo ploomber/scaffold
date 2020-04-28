@@ -17,6 +17,8 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
+  - type pip
+  - pip install -r requirements.txt
 
 script:
   # case when install.py is in the current dir
@@ -25,3 +27,7 @@ script:
   - bash test.sh ..
   # also test when cloning
   - bash test_git.sh $TRAVIS_COMMIT
+  # run tests/ (do not just use "pytest" as that will run template tests/)
+  # since this tests run shell commands that read from stdin, also need to
+  # disable capturing
+  - pytest tests/ --capture=no
