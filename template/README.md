@@ -7,17 +7,14 @@ Requires [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
 Once you cloned the repo:
 
 ```
+# this will create a new conda environment and set up all dependencies
 bash setup.sh
 
 # for help
 bash setup.sh --help
 ```
 
-
-For running tests you also need: `pip install ".[test]"`
-
-For building documentation: `pip install ".[doc]"`
-
+If you want to set up your own environment, use the `environment.yml` file and run `pip install ".[dev]"`
 
 ## Testing
 
@@ -27,7 +24,7 @@ This project uses [nox](https://nox.thea.codes/en/stable/) and [pytest](https://
 nox
 ```
 
-To run tests in the current environment:
+If you prefere to run tests in the current environment:
 
 ```
 pytest

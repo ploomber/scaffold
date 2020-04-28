@@ -1,19 +1,19 @@
 """
 Minimal setup.py
 
+# this installs the package with minimum dependencies for deployment
+pip install .
+
+# this adds dependencies reequired for developers (run tests, build docs,
+# train new models, generate exploratory notebooks, etc)
+pip install ".[dev]"
+
 References
 ----------
 Built using: https://github.com/ploomber/template
 setup.py reference: https://setuptools.readthedocs.io/en/latest/setuptools.html
 More on pkg structure: https://blog.ionelmc.ro/2014/05/25/python-packaging/
-Sample setup.py with explanations: https://github.com/pypa/sampleproject/blob/master/setup.py
-
-Notes
------
-* Only files under src/ (and a few special files) are expected requirements for
-    deployment, everything else is expected for development/testing purposes,
-    hence not included in a source or built distribution
-
+Sample setup.py: https://github.com/pypa/sampleproject/blob/master/setup.py
 """
 import io
 import re
@@ -43,18 +43,14 @@ def read(*names, **kwargs):
 
 # NOTE: keep these lists updated as you add more dependencies to your project
 # if you rather have any dependency installed via conda, add it here and in
-# environment.yml
+# the environment.yml file
 
-
-# Minimum needed to execute this project, this subset should be enough
-# to run the pipeline in production
+# minimum dependencies for deployment
 REQUIRES = []
-# Extra packages for running tests, install with: pip install ".[test]"
-REQUIRES_TEST = ['pytest', 'nox']
-# For developers (e.g. train a new model, run exploratory notebooks)
-REQUIRES_DEV = ['pyyaml']
-# To build documentation
-REQUIRES_DOC = []
+
+# extra dependencies for developers: run tests, build docs, train new models,
+# generate exploratory notebooks, etc
+REQUIRES_DEV = ['pytest', 'nox', 'pyyaml']
 
 setup(
     name='package_name',
@@ -64,19 +60,14 @@ setup(
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
-
     # Include any files in any package with these extensions
     # NOTE: for these files to be included, they have to be inside a proper
     # module (there has to be an __init__.py file)
     package_data={"": ["*.txt", "*.rst", "*.sql", "*.ipynb"]},
-
     install_requires=REQUIRES,
     # Extra dependencies, only needed in specific cases
     extras_require={
         'dev': REQUIRES_DEV,
-        'test': REQUIRES_DEV + REQUIRES_TEST,
-        'doc': REQUIRES_DEV + REQUIRES_DOC,
-        'all': REQUIRES_TEST + REQUIRES_DEV + REQUIRES_DOC
     },
     # if your pipeline requires packages at setup time (e.g. creates C
     # extensions), you also need to provide setup_requires, see setuptools

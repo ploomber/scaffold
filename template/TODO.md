@@ -9,3 +9,4 @@ ADD VERSIONEER
 ## Remember to...
 
 1. Keep your dependencies updated in setup.py and environment.yml
+2. Use `git tag` to mark new releases

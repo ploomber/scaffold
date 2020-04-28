@@ -51,7 +51,7 @@ print "$(type pip)"
 # install the package in editable mode to reflect source code changes
 if [ -f "setup.py" ]; then
     print "Installing package from setup.py in editable mode (all dependencies)..."
-    pip install --editable ".[all]"
+    pip install --editable ".[dev]"
 fi
 
 # also install any wheels
