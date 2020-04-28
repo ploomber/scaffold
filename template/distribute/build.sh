@@ -58,6 +58,18 @@ cp environment.yml $OUT_DIR
 print "Adding setup.sh..."
 cp setup.sh $OUT_DIR
 
+for l in $(cat "$APP_DIR/INCLUDE"); do
+    if [[ $l == *","* ]]; then
+        f=$(echo "$l" | cut -d "," -f 1)
+        pre=$(echo "$l" | cut -d "," -f 2)
+        print "Adding $f at $pre"
+        mkdir -p "$OUT_DIR/$pre"
+        cp $f "$OUT_DIR/$pre"
+    else
+        cp $l $OUT_DIR
+    fi
+done
+
 cd $APP_DIR
 print "Zipping..."
 zip -r "$OUT_NAME.zip" "$OUT_NAME/"
