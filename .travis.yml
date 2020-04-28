@@ -28,4 +28,6 @@ script:
   # also test when cloning
   - bash test_git.sh $TRAVIS_COMMIT
   # run tests/ (do not just use "pytest" as that will run template tests/)
-  - pytest tests/
+  # since this tests run shell commands that read from stdin, also need to
+  # disable capturing
+  - pytest tests/ --capture=no
