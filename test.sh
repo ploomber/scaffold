@@ -1,3 +1,5 @@
+# test installation when installing from a zip file (e.g. using wget/curl)
+
 # stop if any command fails
 set -e
 
@@ -23,13 +25,13 @@ echo 'zipping files...'
 rm -f master.zip
 git ls-tree -r --name-only HEAD | zip -@ master.zip
 
-echo 'Moving files to tmp/'
-rm -rf tmp/
-mkdir -p tmp/template-master
-mv master.zip tmp/template-master
-cd tmp/template-master/
-unzip master.zip
+echo 'Moving files to /tmp/template-master'
+rm -rf /tmp/template-master
+mkdir -p /tmp/template-master
+mv master.zip /tmp/template-master
 rm -rf master.zip
+cd /tmp/template-master/
+unzip master.zip
 cd $CD_ARG
 
 echo 'Running install.py...'
@@ -49,4 +51,4 @@ echo 'Running tests...'
 pytest
 
 echo 'Done.'
-rm -rf tmp/
+rm -rf /tmp/
