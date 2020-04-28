@@ -49,3 +49,4 @@ echo 'Running tests...'
 pytest
 
 echo 'Done.'
+rm -rf tmp/
