@@ -48,7 +48,7 @@ else
 fi
 
 echo 'Installing package...'
-pip install ".[test]"
+pip install ".[dev]"
 
 echo 'Running tests...'
 pytest
