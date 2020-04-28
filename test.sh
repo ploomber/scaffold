@@ -26,12 +26,15 @@ rm -f master.zip
 git ls-tree -r --name-only HEAD | zip -@ master.zip
 
 echo 'Moving files to /tmp/template-master'
-rm -rf /tmp/template-master
-mkdir -p /tmp/template-master
-mv master.zip /tmp/template-master
+rm -rf /tmp/test_sh/template-master
+mkdir -p /tmp/test_sh/template-master
+mv master.zip /tmp/test_sh/template-master
 rm -rf master.zip
-cd /tmp/template-master/
+
+cd /tmp/test_sh/template-master/
 unzip master.zip
+rm -rf master.zip
+
 cd $CD_ARG
 
 echo 'Running install.py...'
@@ -51,4 +54,4 @@ echo 'Running tests...'
 pytest
 
 echo 'Done.'
-rm -rf /tmp/
+rm -rf /tmp/test_sh/
