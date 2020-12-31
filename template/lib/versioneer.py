@@ -57,10 +57,10 @@ class Versioner:
     """Utility functions to manage versions
     """
     def __init__(self, project_root='.'):
-        path_to_src = Path(project_root, 'src')
+        self.path_to_src = Path(project_root, 'src')
 
         dirs = [
-            f for f in os.listdir(path_to_src)
+            f for f in os.listdir(self.path_to_src)
             if Path('src', f).is_dir() and not f.endswith('.egg-info')
         ]
 
@@ -68,7 +68,7 @@ class Versioner:
             raise ValueError(f'src/ must have a single folder, got: {dirs}')
 
         PACKAGE_NAME = dirs[0]
-        self.PACKAGE = path_to_src / PACKAGE_NAME
+        self.PACKAGE = self.path_to_src / PACKAGE_NAME
 
     def current_version(self):
         """Returns the current version in __init__.py
@@ -159,7 +159,7 @@ class Versioner:
         today = datetime.datetime.now().strftime('%Y-%m-%d')
         header_new = '{ver} ({today})\n'.format(ver=new_version, today=today)
         header_new = header_new + '-' * len(header_new)
-        replace_in_file(self.PACKAGE / 'CHANGELOG.rst', header_current,
+        replace_in_file(self.path_to_src / 'CHANGELOG.rst', header_current,
                         header_new)
 
     def add_changelog_dev_section(self, dev_version):
@@ -167,7 +167,7 @@ class Versioner:
         start_current = 'Changelog\n========='
         start_new = (('Changelog\n=========\n\n{dev_version}\n'.format(
             dev_version=dev_version) + '-' * len(dev_version)) + '\n')
-        replace_in_file(self.PACKAGE / 'CHANGELOG.rst', start_current,
+        replace_in_file(self.path_to_src / 'CHANGELOG.rst', start_current,
                         start_new)
 
 
