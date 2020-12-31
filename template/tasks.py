@@ -9,28 +9,33 @@ Source code for simple commands can be included here, for large ones, save it
 in the bin/ folder
 """
 from invoke import task
+from lib import conda
 
 
 @task
 def setup(c):
-    """Setup virtual environment
+    """Setup development environment
     """
-    pass
+    print('Creating conda environment...')
+    c.run('conda env create environment.yml --force')
+    print('Installing package...')
+    conda.run_in_env(c, 'pip install --editable .[dev]', env='package_name')
 
 
-@task
-def lock(c):
-    """Pin virtual environment
-    """
-    pass
-
-
-@task
-def test(c):
+@task(
+    help={
+        'inplace':
+        'Runs tests in the current environment '
+        '(calling pytest directly), otherwise uses nox.'
+    })
+def test(c, inplace=False):
     """Run tests
     """
-    # generate lock file
-    pass
+    if inplace:
+        print('Runnin tests in the current environment...')
+        c.run('pytest tests/', pty=True)
+    else:
+        c.run('nox', pty=True)
 
 
 @task

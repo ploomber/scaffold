@@ -4,30 +4,24 @@ Requires [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
 
 ## Setup development environment
 
-Once you cloned the repo:
+```sh
+pip installl invoke
 
+# install dependencies
+invoke setup
+
+# activate environment
+conda activate package_name
 ```
-# this will create a new conda environment and set up all dependencies
-bash setup.sh
-
-# for help
-bash setup.sh --help
-```
-
-If you want to set up your own environment, use the `environment.yml` file and run `pip install ".[dev]"`
 
 ## Testing
 
-This project uses [nox](https://nox.thea.codes/en/stable/) and [pytest](https://doc.pytest.org/en/2.8.7/index.html) for running tests. First, nox creates a conda environment (different from your development env created in the step above) and runs tests inside it (see `noxfile.py` for details). To run tests:
+```sh
+# creates a fresh virtual environment
+invoke test
 
-```
-nox
-```
-
-If you prefere to run tests in the current environment:
-
-```
-pytest
+# ...or to run tests in the current environment
+invoke test --inplace
 ```
 
 ## Distribution

@@ -30,15 +30,14 @@ from setuptools import setup
 _version_re = re.compile(r'__version__\s+=\s+(.*)')
 
 with open('src/package_name/__init__.py', 'rb') as f:
-    VERSION = str(ast.literal_eval(_version_re.search(
-        f.read().decode('utf-8')).group(1)))
+    VERSION = str(
+        ast.literal_eval(
+            _version_re.search(f.read().decode('utf-8')).group(1)))
 
 
 def read(*names, **kwargs):
-    return io.open(
-        join(dirname(__file__), *names),
-        encoding=kwargs.get('encoding', 'utf8')
-    ).read()
+    return io.open(join(dirname(__file__), *names),
+                   encoding=kwargs.get('encoding', 'utf8')).read()
 
 
 # NOTE: keep these lists updated as you add more dependencies to your project
@@ -50,7 +49,7 @@ REQUIRES = []
 
 # extra dependencies for developers: run tests, build docs, train new models,
 # generate exploratory notebooks, etc
-REQUIRES_DEV = ['pytest', 'nox', 'pyyaml']
+REQUIRES_DEV = ['pytest', 'nox', 'pyyaml', 'invoke', 'flake8', 'click']
 
 setup(
     name='package_name',

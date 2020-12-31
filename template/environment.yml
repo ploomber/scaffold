@@ -13,7 +13,7 @@ name: package_name
 
 dependencies:
   # TODO: define your supported python version
-  - python=3.7
+  - python=3.8
   # TODO: add any other dependencies you want to install via conda most likely,
   # you'll have to add numpy here if you are using it directly or via scipy
   # scikit-learn, pandas, etc
