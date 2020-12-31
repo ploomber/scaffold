@@ -1,5 +1,5 @@
 """
-Just testing that the package is importable
+Sample testing file, it just tests package_name is importable
 """
 
 

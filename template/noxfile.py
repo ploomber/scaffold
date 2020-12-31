@@ -13,11 +13,13 @@ import yaml
 with open('environment.yml') as f:
     env_yml = yaml.load(f, Loader=yaml.SafeLoader)
 
-dep_python = [dep for dep in env_yml['dependencies']
-              if dep.startswith('python=3.')]
+dep_python = [
+    dep for dep in env_yml['dependencies'] if dep.startswith('python=3.')
+]
 
-deps = [dep for dep in env_yml['dependencies']
-        if not dep.startswith('python=3.')]
+deps = [
+    dep for dep in env_yml['dependencies'] if not dep.startswith('python=3.')
+]
 
 if not len(dep_python):
     raise RuntimeError('environment.yml should declare python=3.x as '

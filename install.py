@@ -56,8 +56,8 @@ if args.name is None:
     package_name = input('Package name: ')
 
     while not is_valid_name(package_name):
-        print('"%s" is not a valid package identifier, choose another.'
-              % package_name)
+        print('"%s" is not a valid package identifier, choose another.' %
+              package_name)
         package_name = input('Package name: ')
 else:
     package_name = args.name
@@ -77,16 +77,11 @@ for file in path_to_root.glob('*'):
         else:
             shutil.rmtree(str(file))
 
-
-files_to_replace = [
-    ('setup.py', ),
-    ('setup.sh', ),
-    ('README.md', ),
-    ('environment.yml', ),
-    ('tests', 'test_import_pkg.py'),
-    ('distribute', 'main', 'Procfile'),
-    ('distribute', 'main', 'build.sh')
-]
+# files where we have to replace package_name
+files_to_replace = [('setup.py', ), ('setup.sh', ), ('README.md', ),
+                    ('environment.yml', ), ('tests', 'test_import_pkg.py'),
+                    ('distribute', 'main', 'Procfile'),
+                    ('distribute', 'main', 'build.sh')]
 
 
 def process_path(path):
@@ -108,7 +103,6 @@ for file in Path(*setup_py_parent).glob('*'):
     target = str(file.name)
     print('Moving %s to %s' % (file, target))
     shutil.move(str(file), target)
-
 
 if running_in_parent:
     print('Deleting %s' % path_to_root)
