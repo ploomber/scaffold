@@ -57,10 +57,10 @@ class Versioner:
     """Utility functions to manage versions
     """
     def __init__(self, project_root='.'):
-        self.path_to_src = Path(project_root, 'src')
+        path_to_src = Path(project_root, 'src')
 
         dirs = [
-            f for f in os.listdir(self.path_to_src)
+            f for f in os.listdir(path_to_src)
             if Path('src', f).is_dir() and not f.endswith('.egg-info')
         ]
 
@@ -68,7 +68,14 @@ class Versioner:
             raise ValueError(f'src/ must have a single folder, got: {dirs}')
 
         PACKAGE_NAME = dirs[0]
-        self.PACKAGE = self.path_to_src / PACKAGE_NAME
+        self.PACKAGE = path_to_src / PACKAGE_NAME
+
+        if Path(project_root, 'CHANGELOG.rst').exists():
+            self.path_to_changelog = Path(project_root, 'CHANGELOG.rst')
+        elif Path(project_root, 'CHANGELOG.md').exists():
+            self.path_to_changelog = Path(project_root, 'CHANGELOG.md')
+        else:
+            self.path_to_changelog = None
 
     def current_version(self):
         """Returns the current version in __init__.py
@@ -152,23 +159,38 @@ class Versioner:
             call(['git', 'push', 'origin', new_version])
 
     def update_changelog_release(self, new_version):
-        current = self.current_version()
+        current_version = self.current_version()
 
         # update CHANGELOG header
-        header_current = '{ver}\n'.format(ver=current) + '-' * len(current)
-        today = datetime.datetime.now().strftime('%Y-%m-%d')
-        header_new = '{ver} ({today})\n'.format(ver=new_version, today=today)
-        header_new = header_new + '-' * len(header_new)
-        replace_in_file(self.path_to_src / 'CHANGELOG.rst', header_current,
-                        header_new)
+        header_current = make_header(current_version,
+                                     self.path_to_changelog,
+                                     add_date=False)
+
+        header_new = make_header(new_version,
+                                 self.path_to_changelog,
+                                 add_date=False)
+
+        replace_in_file(self.path_to_changelog, header_current, header_new)
 
     def add_changelog_dev_section(self, dev_version):
         # add new CHANGELOG section
         start_current = 'Changelog\n========='
         start_new = (('Changelog\n=========\n\n{dev_version}\n'.format(
             dev_version=dev_version) + '-' * len(dev_version)) + '\n')
-        replace_in_file(self.path_to_src / 'CHANGELOG.rst', start_current,
-                        start_new)
+        replace_in_file('CHANGELOG.rst', start_current, start_new)
+
+
+def make_header(content, filename, add_date=False):
+    if add_date:
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        content += today
+
+    if filename.endswith('md'):
+        return f'## {content}\n'
+    elif filename.endswith('rst'):
+        return f'{content}\n' + '-' * len(content)
+    else:
+        raise ValueError('Unsupported format, must be .rst or .md')
 
 
 def release(project_root='.', tag=True):
@@ -186,13 +208,15 @@ def release(project_root='.', tag=True):
                         ' release version'.format(current=current),
                         default=release)
 
-    versioner.update_changelog_release(release)
+    if versioner.path_to_changelog:
+        versioner.update_changelog_release(release)
 
-    changelog = read_file('CHANGELOG.rst')
+        changelog = read_file(versioner.path_to_changelog)
 
-    input_confirm('\nCHANGELOG.rst:\n\n{}\n Continue?'.format(changelog),
-                  'done',
-                  abort=True)
+        input_confirm(
+            f'\n{versioner.path_to_changelog}:\n\n{changelog}\n Continue?',
+            'done',
+            abort=True)
 
     # Replace version number and create tag
     print('Commiting release version: {}'.format(release))
