@@ -185,9 +185,9 @@ def make_header(content, filename, add_date=False):
         today = datetime.datetime.now().strftime('%Y-%m-%d')
         content += today
 
-    if filename.endswith('md'):
+    if filename.suffix == '.md':
         return f'## {content}\n'
-    elif filename.endswith('rst'):
+    elif filename.suffix == '.rst':
         return f'{content}\n' + '-' * len(content)
     else:
         raise ValueError('Unsupported format, must be .rst or .md')
@@ -214,7 +214,8 @@ def release(project_root='.', tag=True):
         changelog = read_file(versioner.path_to_changelog)
 
         input_confirm(
-            f'\n{versioner.path_to_changelog}:\n\n{changelog}\n Continue?',
+            f'\n{versioner.path_to_changelog} content:'
+            f'\n\n{changelog}\n',
             'done',
             abort=True)
 
