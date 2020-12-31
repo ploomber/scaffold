@@ -21,20 +21,14 @@ def replace_in_file(path_to_file, original, replacement):
         f.truncate()
 
 
-def read_file(path_to_file):
-    with open(path_to_file, 'r') as f:
-        content = f.read()
-
-    return content
-
-
 def call(*args, **kwargs):
     print(args, kwargs)
     # return subprocess.run(*args, **kwargs, check=True)
 
 
 def input_str(prompt, default):
-    response = input(prompt + f'. (Default: {default}): ')
+    separator = ' ' if len(prompt.splitlines()) == 1 else '\n'
+    response = input(prompt + f'{separator}(Default: {default}): ')
 
     if not response:
         response = default
@@ -43,11 +37,12 @@ def input_str(prompt, default):
 
 
 def input_confirm(prompt, default, abort):
-    response_raw = input(prompt + '. Confirm? [y/n]: ')
+    separator = ' ' if len(prompt.splitlines()) == 1 else '\n'
+    response_raw = input(prompt + f'{separator}Confirm? [y/n]: ')
     response = response_raw in {'y', 'Y', 'yes'}
 
     if not response and abort:
-        print('Abort.')
+        print('Aborted!')
         sys.exit(1)
 
     return response
@@ -152,7 +147,7 @@ class Versioner:
             call(['git', 'commit', '-m', msg])
 
             print('Creating tag {}...'.format(new_version))
-            message = '{} release {}'.format(self.PACKAGE_NAME, new_version)
+            message = '{} release {}'.format(self.PACKAGE, new_version)
             call(['git', 'tag', '-a', new_version, '-m', message])
 
             print('Pushing tags...')
@@ -172,22 +167,25 @@ class Versioner:
 
         replace_in_file(self.path_to_changelog, header_current, header_new)
 
-    def add_changelog_dev_section(self, dev_version):
-        # add new CHANGELOG section
-        start_current = 'Changelog\n========='
-        start_new = (('Changelog\n=========\n\n{dev_version}\n'.format(
-            dev_version=dev_version) + '-' * len(dev_version)) + '\n')
-        replace_in_file('CHANGELOG.rst', start_current, start_new)
+    def add_changelog_new_section(self, dev_version):
+        if self.path_to_changelog.suffix == '.rst':
+            start_current = 'CHANGELOG\n========='
+        else:
+            start_current = '# CHANGELOG'
+
+        new_header = make_header(dev_version, self.path_to_changelog)
+        start_new = f'{start_current}\n{new_header}\n'
+        replace_in_file(self.path_to_changelog, start_current, start_new)
 
 
-def make_header(content, filename, add_date=False):
+def make_header(content, path, add_date=False):
     if add_date:
         today = datetime.datetime.now().strftime('%Y-%m-%d')
         content += today
 
-    if filename.suffix == '.md':
+    if path.suffix == '.md':
         return f'## {content}\n'
-    elif filename.suffix == '.rst':
+    elif path.suffix == '.rst':
         return f'{content}\n' + '-' * len(content)
     else:
         raise ValueError('Unsupported format, must be .rst or .md')
@@ -211,7 +209,7 @@ def release(project_root='.', tag=True):
     if versioner.path_to_changelog:
         versioner.update_changelog_release(release)
 
-        changelog = read_file(versioner.path_to_changelog)
+        changelog = versioner.path_to_changelog.read_text()
 
         input_confirm(
             f'\n{versioner.path_to_changelog} content:'
@@ -227,7 +225,7 @@ def release(project_root='.', tag=True):
     bumped_version = versioner.bump_up_version()
 
     print('Creating new section in CHANGELOG...')
-    versioner.add_changelog_dev_section(bumped_version)
+    versioner.add_changelog_new_section(bumped_version)
     print('Commiting dev version: {}'.format(bumped_version))
     versioner.commit_version(bumped_version)
 
