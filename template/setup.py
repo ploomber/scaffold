@@ -49,7 +49,7 @@ REQUIRES = []
 
 # extra dependencies for developers: run tests, build docs, train new models,
 # generate exploratory notebooks, etc
-REQUIRES_DEV = ['pytest', 'nox', 'pyyaml', 'invoke', 'flake8', 'click']
+REQUIRES_DEV = ['pytest', 'nox', 'pyyaml', 'invoke', 'flake8']
 
 setup(
     name='package_name',

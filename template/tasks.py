@@ -9,7 +9,7 @@ Source code for simple commands can be included here, for large ones, save it
 in the bin/ folder
 """
 from invoke import task
-from lib import conda
+from lib import conda, versioneer
 
 
 @task
@@ -42,7 +42,7 @@ def test(c, inplace=False):
 def release(c):
     """Create a new version of this project
     """
-    pass
+    versioneer.release(project_root='.', tag=True)
 
 
 @task
