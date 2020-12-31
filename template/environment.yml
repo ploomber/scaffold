@@ -18,7 +18,12 @@ dependencies:
   # you'll have to add numpy here if you are using it directly or via scipy
   # scikit-learn, pandas, etc
   - numpy
+  - pyarrow
+  - matplotlib
 
+  - pip
+  - pip:
+    - ploomber
   # NOTE: keep this list up-to-date, some packages that are usually more
   # reliable via conda install include: numpy, tensorflow, pytorch, pyscopg2
   # It is ok to duplicate dependencies here and in setup.py, dependencies

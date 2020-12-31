@@ -174,7 +174,7 @@ class Versioner:
             start_current = '# CHANGELOG'
 
         new_header = make_header(dev_version, self.path_to_changelog)
-        start_new = f'{start_current}\n{new_header}\n'
+        start_new = f'{start_current}\n\n{new_header}\n'
         replace_in_file(self.path_to_changelog, start_current, start_new)
 
 

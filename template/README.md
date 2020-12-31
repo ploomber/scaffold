@@ -24,6 +24,15 @@ invoke test
 invoke test --inplace
 ```
 
+## Running the pipeline
+
+```sh
+ploomber build
+
+# ..or to start an interactive session
+ploomber interact
+```
+
 ## Distribution
 
 TODO: add changelog edit git tag instructions
