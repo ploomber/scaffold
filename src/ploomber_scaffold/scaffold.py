@@ -47,11 +47,8 @@ def render_template(path, package_name):
     pkg_dir.rename(path / 'src' / package_name)
 
 
-def cli():
-    parser = argparse.ArgumentParser(description='Create scaffold')
-    parser.add_argument('--path', type=str, help='Path', default=None)
-    args = parser.parse_args()
-    project_path = None if not args.path else Path(args.path)
+def cli(project_path):
+    project_path = None if not project_path else Path(project_path)
 
     print("""
 Python packages should also have short, all-lowercase names,
@@ -89,4 +86,7 @@ Source: https://www.python.org/dev/peps/pep-0008/
 
 
 if __name__ == '__main__':
-    cli()
+    parser = argparse.ArgumentParser(description='Create scaffold')
+    parser.add_argument('--path', type=str, help='Path', default=None)
+    args = parser.parse_args()
+    cli(project_path=args.path)
