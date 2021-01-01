@@ -23,7 +23,17 @@ def read(*names, **kwargs):
                    encoding=kwargs.get('encoding', 'utf8')).read()
 
 
-DEV = ['twine', 'flake8', 'yapf', 'pytest', 'invoke', 'ipython', 'nox']
+DEV = [
+    'twine',
+    'flake8',
+    'yapf',
+    'pytest',
+    'invoke',
+    'ipython',
+    'nox',
+    # ipython not yet compatible with the latest version of jedi
+    'jedi==0.17.2',
+]
 
 setup(
     name='ploomber-scaffold',
