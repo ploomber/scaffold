@@ -1,8 +1,8 @@
 """
 API for creating scaffolding projects
 """
+import itertools
 import os
-import sys
 import shutil
 import re
 from pathlib import Path
@@ -23,19 +23,35 @@ def is_valid_package_name(package_name):
             and not package_name[0].isnumeric())
 
 
-def render_template(name):
+def last_part(project_path):
+    return project_path.parts[-1]
+
+
+def render_template(path, package_name):
     """
     Replace references to "package_name" in the template for the name selected
     by the user
     """
-    pass
+    for dirpath, _, filenames in os.walk(path):
+        paths = [
+            Path(dirpath, f) for f in filenames if Path(f).suffix in
+            {'.py', '.md', '.yml', '.yaml', '.sh', '.sql'} or f == '.gitignore'
+        ]
+
+        for p in itertools.chain(paths):
+            p = Path(p)
+            new = p.read_text().replace('package_name', package_name)
+            p.write_text(new)
+
+    pkg_dir = path / 'src' / 'package_name'
+    pkg_dir.rename(path / 'src' / package_name)
 
 
 def cli():
     parser = argparse.ArgumentParser(description='Create scaffold')
-    parser.add_argument('--path', type=Path, help='Path', default=None)
+    parser.add_argument('--path', type=str, help='Path', default=None)
     args = parser.parse_args()
-    target = args.path
+    project_path = None if not args.path else Path(args.path)
 
     print("""
 Python packages should also have short, all-lowercase names,
@@ -45,27 +61,30 @@ Source: https://www.python.org/dev/peps/pep-0008/
 
 """)
 
-    if target is None:
-        pkg_name = input('Package name: ')
+    if project_path is None:
+        project_path = Path(input('Project path: '))
+        pkg_name = last_part(project_path)
+        print(f'Package name will be: {pkg_name!r}')
 
         while not is_valid_package_name(pkg_name):
             print('"%s" is not a valid package identifier, choose another.' %
                   pkg_name)
-            pkg_name = input('Package name: ')
+            pkg_name = input('Project path: ')
     else:
-        pkg_name = args.path.parts[-1]
+        pkg_name = last_part(project_path)
 
         if not is_valid_package_name(pkg_name):
             raise ValueError('"%s" is not a valid package identifier, '
                              'choose another.' % pkg_name)
 
-    if target.is_dir() and len(os.listdir(target)):
-        raise ValueError(f'{target!r} is a non-empty directory')
-    elif target.is_file():
-        raise ValueError(f'{target!r} is an existing file')
+    if project_path.is_dir() and len(os.listdir(project_path)):
+        raise ValueError(f'{project_path!r} is a non-empty directory')
+    elif project_path.is_file():
+        raise ValueError(f'{project_path!r} is an existing file')
 
-    print(f'Copying template to {str(target)!r}')
-    copy_template(target)
+    print(f'Copying template to {str(project_path)!r}')
+    copy_template(project_path)
+    render_template(project_path, pkg_name)
     print('Done.')
 
 
