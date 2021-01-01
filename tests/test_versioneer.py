@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import pytest
 
@@ -8,7 +9,8 @@ from versioneer import Versioner
 @pytest.fixture
 def move_to_project():
     old = os.getcwd()
-    os.chdir('template')
+    p = Path('src', 'ploomber_scaffold', 'template')
+    os.chdir(p)
     yield
     os.chdir(old)
 

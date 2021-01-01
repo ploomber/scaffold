@@ -23,7 +23,7 @@ def read(*names, **kwargs):
                    encoding=kwargs.get('encoding', 'utf8')).read()
 
 
-DEV = ['twine', 'flake8', 'yapf', 'pytest', 'invoke']
+DEV = ['twine', 'flake8', 'yapf', 'pytest', 'invoke', 'ipython', 'nox']
 
 setup(
     name='ploomber-scaffold',
