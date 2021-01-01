@@ -10,7 +10,7 @@ def test_cli(tmp_directory):
     os.chdir('my_new_project')
 
     # setup command
-    assert not subprocess.run(['invoke', 'setup'])
+    assert not subprocess.run(['invoke', 'setup']).returncode
 
     # test command
     script = """
@@ -20,4 +20,4 @@ def test_cli(tmp_directory):
     """
     Path('test.sh').write_text(script)
 
-    assert not subprocess.run(['bash', 'test.sh'])
+    assert not subprocess.run(['bash', 'test.sh']).returncode
