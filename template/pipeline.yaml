@@ -3,6 +3,8 @@ meta:
 
   source_loader:
     module: package_name
+  
+  jupyter_hot_reload: True
 
 tasks:
   - source: package_name.tasks.raw.get
