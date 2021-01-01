@@ -30,7 +30,3 @@ def test_release_version(move_to_project):
 def test_bump_up_version(monkeypatch, version, version_new, move_to_project):
     monkeypatch.setattr(Versioner, 'current_version', lambda self: version)
     assert Versioner().bump_up_version() == version_new
-
-
-# def test_commit_version(monkeypatch):
-# monkeypatch.setattr(Versioner, 'current_version', lambda: version)
