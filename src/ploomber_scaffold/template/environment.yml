@@ -18,8 +18,10 @@ dependencies:
   # you'll have to add numpy here if you are using it directly or via scipy
   # scikit-learn, pandas, etc
   - numpy
+  - pandas
   - pyarrow
   - matplotlib
+  - jupyter
 
   - pip
   - pip:
