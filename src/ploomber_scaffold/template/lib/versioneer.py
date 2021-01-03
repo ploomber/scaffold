@@ -25,9 +25,13 @@ def call(*args, **kwargs):
     return subprocess.run(*args, **kwargs, check=True)
 
 
+def _input(prompt):
+    return input(prompt)
+
+
 def input_str(prompt, default):
     separator = ' ' if len(prompt.splitlines()) == 1 else '\n'
-    response = input(prompt + f'{separator}(Default: {default}): ')
+    response = _input(prompt + f'{separator}(Default: {default}): ')
 
     if not response:
         response = default
@@ -37,7 +41,7 @@ def input_str(prompt, default):
 
 def input_confirm(prompt, default, abort):
     separator = ' ' if len(prompt.splitlines()) == 1 else '\n'
-    response_raw = input(prompt + f'{separator}Confirm? [y/n]: ')
+    response_raw = _input(prompt + f'{separator}Confirm? [y/n]: ')
     response = response_raw in {'y', 'Y', 'yes'}
 
     if not response and abort:
@@ -123,7 +127,7 @@ class Versioner:
 
         return new_version
 
-    def commit_version(self, new_version, tag=False):
+    def commit_version(self, new_version, msg_template, tag=False):
         """
         Replaces version in  __init__ and optionally creates a tag in the git
         repository (also saves a commit)
@@ -140,13 +144,15 @@ class Versioner:
 
         # Commit repo with updated dev version
         print('Creating new commit release version...')
-        msg = 'Release {}'.format(new_version)
+        msg = msg_template.format(package_name=self.package_name,
+                                  new_version=new_version)
         call(['git', 'commit', '-m', msg])
 
         # Create tag
         if tag:
             print('Creating tag {}...'.format(new_version))
-            message = '{} release {}'.format(self.package_name, new_version)
+            message = msg_template.format(package_name=self.package_name,
+                                          new_version=new_version)
             call(['git', 'tag', '-a', new_version, '-m', message])
 
             print('Pushing tags...')
@@ -220,7 +226,8 @@ def release(project_root='.', tag=True):
 
     # Replace version number and create tag
     print('Commiting release version: {}'.format(release))
-    versioner.commit_version(release, tag=tag)
+    versioner.commit_version(
+        release, msg_template='{package_name} release {new_version}', tag=tag)
 
     # Create a new dev version and save it
     bumped_version = versioner.bump_up_version()
@@ -228,19 +235,12 @@ def release(project_root='.', tag=True):
     print('Creating new section in CHANGELOG...')
     versioner.add_changelog_new_dev_section(bumped_version)
     print('Commiting dev version: {}'.format(bumped_version))
-    versioner.commit_version(bumped_version)
+    versioner.commit_version(
+        bumped_version,
+        msg_template='Bumps up {package_name} to version {new_version}',
+        tag=False)
 
-    # Run git add and git status
-    print('Adding new changes to the repository...')
-    call(['git', 'add', '--all'])
-    call(['git', 'status'])
-
-    # Commit repo with updated dev version
-    print('Creating new commit with new dev version...')
-    msg = 'Bumps up project to version {}'.format(bumped_version)
-    call(['git', 'commit', '-m', msg])
     call(['git', 'push'])
-
     print('Version {} was created, you are now in {}'.format(
         release, bumped_version))
 

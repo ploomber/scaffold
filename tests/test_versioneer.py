@@ -101,16 +101,27 @@ def test_add_changelog_new_dev_section(backup_template):
 def test_release(backup_template, monkeypatch):
     mock = Mock()
     mock_input = Mock()
-    mock_input.return_value = ''
-    mock_confirm = Mock()
-    mock_confirm.return_value = 'y'
-    monkeypatch.setattr(versioneer, 'call', mock)
-    monkeypatch.setattr(versioneer, 'input_str', mock_input)
-    monkeypatch.setattr(versioneer, 'input_confirm', mock_confirm)
+    mock_input.side_effect = ['', 'y']
 
-    from IPython import embed
-    embed()
+    monkeypatch.setattr(versioneer, 'call', mock)
+    monkeypatch.setattr(versioneer, '_input', mock_input)
 
     versioneer.release(tag=True)
 
-    mock.call_args_list
+    assert mock.call_args_list == [
+        _call(['git', 'add', '--all']),
+        _call(['git', 'status']),
+        _call(['git', 'commit', '-m', 'package_name release 0.1']),
+        _call(['git', 'tag', '-a', '0.1', '-m', 'package_name release 0.1']),
+        _call(['git', 'push', 'origin', '0.1']),
+        _call(['git', 'add', '--all']),
+        _call(['git', 'status']),
+        _call([
+            'git', 'commit', '-m', 'Bumps up package_name to version 0.1.1dev'
+        ]),
+        _call(['git', 'push'])
+    ]
+
+    today = datetime.now().strftime('%Y-%m-%d')
+    assert Path('CHANGELOG.md').read_text(
+    ) == f'# CHANGELOG\n\n## 0.1.1dev\n\n## 0.1 ({today})'
