@@ -22,8 +22,7 @@ def replace_in_file(path_to_file, original, replacement):
 
 
 def call(*args, **kwargs):
-    print(args, kwargs)
-    # return subprocess.run(*args, **kwargs, check=True)
+    return subprocess.run(*args, **kwargs, check=True)
 
 
 def input_str(prompt, default):
@@ -62,8 +61,8 @@ class Versioner:
         if len(dirs) != 1:
             raise ValueError(f'src/ must have a single folder, got: {dirs}')
 
-        PACKAGE_NAME = dirs[0]
-        self.PACKAGE = path_to_src / PACKAGE_NAME
+        self.package_name = dirs[0]
+        self.PACKAGE = path_to_src / self.package_name
 
         if Path(project_root, 'CHANGELOG.rst').exists():
             self.path_to_changelog = Path(project_root, 'CHANGELOG.rst')
@@ -134,20 +133,20 @@ class Versioner:
         # replace new version in __init__.py
         replace_in_file(self.PACKAGE / '__init__.py', current, new_version)
 
+        # Run git add and git status
+        print('Adding new changes to the repository...')
+        call(['git', 'add', '--all'])
+        call(['git', 'status'])
+
+        # Commit repo with updated dev version
+        print('Creating new commit release version...')
+        msg = 'Release {}'.format(new_version)
+        call(['git', 'commit', '-m', msg])
+
         # Create tag
         if tag:
-            # Run git add and git status
-            print('Adding new changes to the repository...')
-            call(['git', 'add', '--all'])
-            call(['git', 'status'])
-
-            # Commit repo with updated dev version
-            print('Creating new commit release version...')
-            msg = 'Release {}'.format(new_version)
-            call(['git', 'commit', '-m', msg])
-
             print('Creating tag {}...'.format(new_version))
-            message = '{} release {}'.format(self.PACKAGE, new_version)
+            message = '{} release {}'.format(self.package_name, new_version)
             call(['git', 'tag', '-a', new_version, '-m', message])
 
             print('Pushing tags...')

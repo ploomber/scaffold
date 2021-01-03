@@ -1,9 +1,17 @@
 import os
 from pathlib import Path
+from unittest.mock import Mock, _Call
 
 import pytest
 
 from versioneer import Versioner
+import versioneer
+
+
+def _call(arg):
+    """Shortcut for comparing call objects
+    """
+    return _Call(((arg, ), ))
 
 
 @pytest.fixture
@@ -38,5 +46,37 @@ def test_bump_up_version(monkeypatch, version, version_new, move_to_project):
     assert Versioner().bump_up_version() == version_new
 
 
-def test_commit_version(backup_template):
+def test_commit_version_no_tag(backup_template, monkeypatch):
     v = Versioner()
+
+    mock = Mock()
+    monkeypatch.setattr(versioneer, 'call', mock)
+
+    v.commit_version('0.2', tag=False)
+
+    assert mock.call_args_list == [
+        _call(['git', 'add', '--all']),
+        _call(['git', 'status']),
+        _call(['git', 'commit', '-m', 'Release 0.2']),
+    ]
+
+    assert "__version__ = '0.2'" in (v.PACKAGE / '__init__.py').read_text()
+
+
+def test_commit_version_tag(backup_template, monkeypatch):
+    v = Versioner()
+
+    mock = Mock()
+    monkeypatch.setattr(versioneer, 'call', mock)
+
+    v.commit_version('0.2', tag=True)
+
+    assert mock.call_args_list == [
+        _call(['git', 'add', '--all']),
+        _call(['git', 'status']),
+        _call(['git', 'commit', '-m', 'Release 0.2']),
+        _call(['git', 'tag', '-a', '0.2', '-m', 'package_name release 0.2']),
+        _call(['git', 'push', 'origin', '0.2'])
+    ]
+
+    assert "__version__ = '0.2'" in (v.PACKAGE / '__init__.py').read_text()
