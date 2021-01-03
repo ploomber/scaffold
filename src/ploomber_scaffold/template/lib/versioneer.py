@@ -164,7 +164,7 @@ class Versioner:
 
         header_new = make_header(new_version,
                                  self.path_to_changelog,
-                                 add_date=False)
+                                 add_date=True)
 
         replace_in_file(self.path_to_changelog, header_current, header_new)
 
@@ -182,7 +182,7 @@ class Versioner:
 def make_header(content, path, add_date=False):
     if add_date:
         today = datetime.datetime.now().strftime('%Y-%m-%d')
-        content += today
+        content += f' ({today})'
 
     if path.suffix == '.md':
         return f'## {content}'

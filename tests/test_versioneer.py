@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from unittest.mock import Mock, _Call
+from datetime import datetime
 
 import pytest
 
@@ -23,7 +24,7 @@ def move_to_project():
     os.chdir(old)
 
 
-def test_locate_package_and_readme():
+def test_locate_package_and_readme(move_to_project):
     v = Versioner()
     assert v.PACKAGE == Path('src', 'package_name')
     assert v.path_to_changelog == Path('CHANGELOG.md')
@@ -85,7 +86,9 @@ def test_commit_version_tag(backup_template, monkeypatch):
 def test_update_changelog_release(backup_template):
     v = Versioner()
     v.update_changelog_release('0.1')
-    assert v.path_to_changelog.read_text() == '# CHANGELOG\n\n## 0.1'
+    today = datetime.now().strftime('%Y-%m-%d')
+    assert v.path_to_changelog.read_text(
+    ) == f'# CHANGELOG\n\n## 0.1 ({today})'
 
 
 def test_add_changelog_new_dev_section(backup_template):
