@@ -96,3 +96,21 @@ def test_add_changelog_new_dev_section(backup_template):
     v.add_changelog_new_dev_section('0.2dev')
     assert v.path_to_changelog.read_text(
     ) == '# CHANGELOG\n\n## 0.2dev\n\n## 0.1dev'
+
+
+def test_release(backup_template, monkeypatch):
+    mock = Mock()
+    mock_input = Mock()
+    mock_input.return_value = ''
+    mock_confirm = Mock()
+    mock_confirm.return_value = 'y'
+    monkeypatch.setattr(versioneer, 'call', mock)
+    monkeypatch.setattr(versioneer, 'input_str', mock_input)
+    monkeypatch.setattr(versioneer, 'input_confirm', mock_confirm)
+
+    from IPython import embed
+    embed()
+
+    versioneer.release(tag=True)
+
+    mock.call_args_list
