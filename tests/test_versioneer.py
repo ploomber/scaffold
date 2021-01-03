@@ -80,3 +80,12 @@ def test_commit_version_tag(backup_template, monkeypatch):
     ]
 
     assert "__version__ = '0.2'" in (v.PACKAGE / '__init__.py').read_text()
+
+
+def test_update_changelog_release(backup_template):
+    v = Versioner()
+
+    v.update_changelog_release('0.2')
+
+    from IPython import embed
+    embed()

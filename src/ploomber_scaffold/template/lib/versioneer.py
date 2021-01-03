@@ -153,6 +153,8 @@ class Versioner:
             call(['git', 'push', 'origin', new_version])
 
     def update_changelog_release(self, new_version):
+        """Updates changelog file, adding a new section
+        """
         current_version = self.current_version()
 
         # update CHANGELOG header
