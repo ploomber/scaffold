@@ -84,8 +84,12 @@ def test_commit_version_tag(backup_template, monkeypatch):
 
 def test_update_changelog_release(backup_template):
     v = Versioner()
+    v.update_changelog_release('0.1')
+    assert v.path_to_changelog.read_text() == '# CHANGELOG\n\n## 0.1'
 
-    v.update_changelog_release('0.2')
 
-    from IPython import embed
-    embed()
+def test_add_changelog_new_dev_section(backup_template):
+    v = Versioner()
+    v.add_changelog_new_dev_section('0.2dev')
+    assert v.path_to_changelog.read_text(
+    ) == '# CHANGELOG\n\n## 0.2dev\n\n## 0.1dev'

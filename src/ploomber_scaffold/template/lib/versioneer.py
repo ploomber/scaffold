@@ -168,14 +168,14 @@ class Versioner:
 
         replace_in_file(self.path_to_changelog, header_current, header_new)
 
-    def add_changelog_new_section(self, dev_version):
+    def add_changelog_new_dev_section(self, dev_version):
         if self.path_to_changelog.suffix == '.rst':
             start_current = 'CHANGELOG\n========='
         else:
             start_current = '# CHANGELOG'
 
         new_header = make_header(dev_version, self.path_to_changelog)
-        start_new = f'{start_current}\n\n{new_header}\n'
+        start_new = f'{start_current}\n\n{new_header}'
         replace_in_file(self.path_to_changelog, start_current, start_new)
 
 
@@ -185,9 +185,9 @@ def make_header(content, path, add_date=False):
         content += today
 
     if path.suffix == '.md':
-        return f'## {content}\n'
+        return f'## {content}'
     elif path.suffix == '.rst':
-        return f'{content}\n' + '-' * len(content)
+        return f'{content}' + '-' * len(content)
     else:
         raise ValueError('Unsupported format, must be .rst or .md')
 
@@ -226,7 +226,7 @@ def release(project_root='.', tag=True):
     bumped_version = versioner.bump_up_version()
 
     print('Creating new section in CHANGELOG...')
-    versioner.add_changelog_new_section(bumped_version)
+    versioner.add_changelog_new_dev_section(bumped_version)
     print('Commiting dev version: {}'.format(bumped_version))
     versioner.commit_version(bumped_version)
 
