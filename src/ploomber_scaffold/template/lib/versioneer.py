@@ -39,7 +39,7 @@ def input_str(prompt, default):
     return response
 
 
-def input_confirm(prompt, default, abort):
+def input_confirm(prompt, abort):
     separator = ' ' if len(prompt.splitlines()) == 1 else '\n'
     response_raw = _input(prompt + f'{separator}Confirm? [y/n]: ')
     response = response_raw in {'y', 'Y', 'yes'}
@@ -221,7 +221,6 @@ def release(project_root='.', tag=True):
         input_confirm(
             f'\n{versioner.path_to_changelog} content:'
             f'\n\n{changelog}\n',
-            'done',
             abort=True)
 
     # Replace version number and create tag
@@ -252,10 +251,11 @@ def upload(tag, production):
     print('Checking out tag {}'.format(tag))
     call(['git', 'checkout', tag])
 
-    current = Versioner.current_version()
+    current = Versioner().current_version()
 
     input_confirm('Version in {} tag is {}. Do you want to continue?'.format(
-        tag, current))
+        tag, current),
+                  abort=True)
 
     # create distribution
     call(['rm', '-rf', 'dist/'])

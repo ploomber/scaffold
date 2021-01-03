@@ -53,12 +53,14 @@ def test_commit_version_no_tag(backup_template, monkeypatch):
     mock = Mock()
     monkeypatch.setattr(versioneer, 'call', mock)
 
-    v.commit_version('0.2', tag=False)
+    v.commit_version('0.2',
+                     msg_template='{package_name} release {new_version}',
+                     tag=False)
 
     assert mock.call_args_list == [
         _call(['git', 'add', '--all']),
         _call(['git', 'status']),
-        _call(['git', 'commit', '-m', 'Release 0.2']),
+        _call(['git', 'commit', '-m', 'package_name release 0.2']),
     ]
 
     assert "__version__ = '0.2'" in (v.PACKAGE / '__init__.py').read_text()
@@ -70,12 +72,14 @@ def test_commit_version_tag(backup_template, monkeypatch):
     mock = Mock()
     monkeypatch.setattr(versioneer, 'call', mock)
 
-    v.commit_version('0.2', tag=True)
+    v.commit_version('0.2',
+                     msg_template='{package_name} release {new_version}',
+                     tag=True)
 
     assert mock.call_args_list == [
         _call(['git', 'add', '--all']),
         _call(['git', 'status']),
-        _call(['git', 'commit', '-m', 'Release 0.2']),
+        _call(['git', 'commit', '-m', 'package_name release 0.2']),
         _call(['git', 'tag', '-a', '0.2', '-m', 'package_name release 0.2']),
         _call(['git', 'push', 'origin', '0.2'])
     ]
@@ -125,3 +129,28 @@ def test_release(backup_template, monkeypatch):
     today = datetime.now().strftime('%Y-%m-%d')
     assert Path('CHANGELOG.md').read_text(
     ) == f'# CHANGELOG\n\n## 0.1.1dev\n\n## 0.1 ({today})'
+
+
+@pytest.mark.parametrize('production', [False, True])
+def test_upload(backup_template, monkeypatch, production):
+    mock = Mock()
+    mock_input = Mock()
+    mock_input.side_effect = ['y']
+
+    monkeypatch.setattr(versioneer, 'call', mock)
+    monkeypatch.setattr(versioneer, '_input', mock_input)
+
+    versioneer.upload(tag='0.1', production=production)
+
+    upload_call = (_call(['twine', 'upload', 'dist/*'])
+                   if production else _call([
+                       'twine', 'upload', '--repository-url',
+                       'https://test.pypi.org/legacy/', 'dist/*'
+                   ]))
+
+    assert mock.call_args_list == [
+        _call(['git', 'checkout', '0.1']),
+        _call(['rm', '-rf', 'dist/']),
+        _call(['python', 'setup.py', 'sdist', 'bdist_wheel']),
+        upload_call,
+    ]
