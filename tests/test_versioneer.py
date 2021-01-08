@@ -182,6 +182,6 @@ def test_upload(backup_template, monkeypatch, production):
     assert mock.call_args_list == [
         _call(['git', 'checkout', '0.1']),
         _call(['rm', '-rf', 'dist/']),
-        _call(['python', 'setup.py', 'sdist', 'bdist_wheel']),
+        _call(['python', 'setup.py', 'bdist_wheel']),
         upload_call,
     ]
