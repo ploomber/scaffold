@@ -31,3 +31,16 @@ def test_cli(tmp_directory):
     Path('build.sh').write_text(script)
 
     assert not subprocess.run(['bash', 'build.sh']).returncode
+
+    # test installing from wheel
+    script = """
+    eval "$(conda shell.bash hook)"
+    conda activate my_new_project
+    pip uninstall my_new_project --yes
+    python setup.py bdist_wheel
+    pip install dist/my_new_project-0.1.dev0-py3-none-any.whl
+    ploomber build
+    """
+    Path('build_from_wheel.sh').write_text(script)
+
+    assert not subprocess.run(['bash', 'build_from_wheel.sh']).returncode
