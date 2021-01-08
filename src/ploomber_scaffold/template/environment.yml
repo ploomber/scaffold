@@ -1,34 +1,17 @@
 # Although most dependencies can be easily be installed using pip, doing it
 # via conda provides a higher level of isolation and reproducibility, since
-# conda handles non-Python dependencies that pip cannot. These non-Python
-# dependencies appear in libraries that have C/C++ bindings such as numpy,
-# tensorflow or pytorch. However, not all pypi packages are available via
-# conda, so we have to use both. This conda environment.yml file contains a
-# list of dependencies that should be installed via conda, the rest can be
-# installed using pip, for details on using pip inside a conda env see this:
+# conda handles non-Python dependencies that pip cannot. If you have issues
+# installing packages with pip, try with conda, chances are, it will be]
+# easier to install
+
+# For details on using pip inside a conda env see this:
 # https://www.anaconda.com/using-pip-in-a-conda-environment/
-# tl; dr; whenever you add a dependency here, re-create the environment,
-# there are a few quirks when using conda then pip and then conda again
 name: package_name
 
-dependencies:
-  # TODO: define your supported python version
-  - python=3.8
-  # TODO: add any other dependencies you want to install via conda most likely,
-  # you'll have to add numpy here if you are using it directly or via scipy
-  # scikit-learn, pandas, etc
-  - numpy
-  - pandas
-  - pyarrow
-  - matplotlib
-  - jupyter
+channels:
+  - conda-forge
 
+dependencies:
+  # you can switch the python version if you want to
+  - python=3.8
   - pip
-  - pip:
-    - ploomber
-  # NOTE: keep this list up-to-date, some packages that are usually more
-  # reliable via conda install include: numpy, tensorflow, pytorch, pyscopg2
-  # It is ok to duplicate dependencies here and in setup.py, dependencies
-  # installed via conda will not be replaced by pip install *unless* there
-  # is version mismatch and they have to be upgraded/downgraded to make
-  # other packages work

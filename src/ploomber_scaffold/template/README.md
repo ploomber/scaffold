@@ -32,3 +32,16 @@ ploomber build
 # ..or to start an interactive session
 ploomber interact
 ```
+
+## Exporting to Kubernetes or Airflow
+
+If you want to export to Airflow or Kubernetes, add "soopervisor" to your
+dependencies and check out the docs: https://soopervisor.readthedocs.io/
+
+```sh
+# export to kubernetes/argo
+soopervisor export
+
+# export to airflow
+soopervisor export-airflow
+```
