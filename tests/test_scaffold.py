@@ -21,3 +21,13 @@ def test_cli(tmp_directory):
     Path('test.sh').write_text(script)
 
     assert not subprocess.run(['bash', 'test.sh']).returncode
+
+    # test run pipeline
+    script = """
+    eval "$(conda shell.bash hook)"
+    conda activate my_new_project
+    ploomber build
+    """
+    Path('build.sh').write_text(script)
+
+    assert not subprocess.run(['bash', 'build.sh']).returncode

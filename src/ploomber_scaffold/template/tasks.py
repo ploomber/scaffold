@@ -20,6 +20,7 @@ def setup(c):
     c.run('conda env create environment.yml --force')
     print('Installing package...')
     conda.run_in_env(c, 'pip install --editable .[dev]', env='package_name')
+    print('Done! Activate your environment with: conda activate package_name')
 
 
 @task(

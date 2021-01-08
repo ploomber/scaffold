@@ -54,10 +54,10 @@ setup(
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
-    # Include any non-Python files with these extensions
-    # NOTE: for these files to be included, they have to be inside a proper
-    # module (there has to be an __init__.py file)
-    package_data={"": ["*.txt", "*.rst", "*.sql", "*.ipynb"]},
+    include_package_data=True,
+    # Include any non-Python files with these extensions, for details:
+    # https://setuptools.readthedocs.io/en/latest/userguide/datafiles.html
+    package_data={"": ["*/*.sql", "*/*.ipynb", "notebooks/*.py"]},
     install_requires=REQUIRES,
     extras_require={
         'dev': REQUIRES_DEV,
