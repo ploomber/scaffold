@@ -33,3 +33,8 @@ def release(c):
     """Create a new version of this project
     """
     versioneer.release(project_root='.', tag=True)
+
+
+@task
+def upload(c, tag, production=False):
+    versioneer.upload(tag, production=production)
