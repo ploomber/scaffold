@@ -131,6 +131,37 @@ def test_release(backup_template, monkeypatch):
     ) == f'# CHANGELOG\n\n## 0.1.1dev\n\n## 0.1 ({today})'
 
 
+def test_release_with_no_changelog(backup_template, monkeypatch, capsys):
+    Path('CHANGELOG.md').unlink()
+
+    mock = Mock()
+    mock_input = Mock()
+    mock_input.side_effect = ['', 'y']
+
+    monkeypatch.setattr(versioneer, 'call', mock)
+    monkeypatch.setattr(versioneer, '_input', mock_input)
+
+    versioneer.release(tag=True)
+
+    captured = capsys.readouterr()
+    assert ('No CHANGELOG.{rst,md} found, skipping changelog editing...'
+            in captured.out)
+
+    assert mock.call_args_list == [
+        _call(['git', 'add', '--all']),
+        _call(['git', 'status']),
+        _call(['git', 'commit', '-m', 'package_name release 0.1']),
+        _call(['git', 'tag', '-a', '0.1', '-m', 'package_name release 0.1']),
+        _call(['git', 'push', 'origin', '0.1']),
+        _call(['git', 'add', '--all']),
+        _call(['git', 'status']),
+        _call([
+            'git', 'commit', '-m', 'Bumps up package_name to version 0.1.1dev'
+        ]),
+        _call(['git', 'push'])
+    ]
+
+
 @pytest.mark.parametrize('production', [False, True])
 def test_upload(backup_template, monkeypatch, production):
     mock = Mock()
