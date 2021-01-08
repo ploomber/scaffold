@@ -1,6 +1,3 @@
-"""
-Managing project versions
-"""
 import sys
 import ast
 import re
@@ -22,13 +19,16 @@ def replace_in_file(path_to_file, original, replacement):
 
 
 def call(*args, **kwargs):
-    print(args, kwargs)
-    # return subprocess.run(*args, **kwargs, check=True)
+    return subprocess.run(*args, **kwargs, check=True)
+
+
+def _input(prompt):
+    return input(prompt)
 
 
 def input_str(prompt, default):
     separator = ' ' if len(prompt.splitlines()) == 1 else '\n'
-    response = input(prompt + f'{separator}(Default: {default}): ')
+    response = _input(prompt + f'{separator}(Default: {default}): ')
 
     if not response:
         response = default
@@ -36,9 +36,9 @@ def input_str(prompt, default):
     return response
 
 
-def input_confirm(prompt, default, abort):
+def input_confirm(prompt, abort):
     separator = ' ' if len(prompt.splitlines()) == 1 else '\n'
-    response_raw = input(prompt + f'{separator}Confirm? [y/n]: ')
+    response_raw = _input(prompt + f'{separator}Confirm? [y/n]: ')
     response = response_raw in {'y', 'Y', 'yes'}
 
     if not response and abort:
@@ -62,8 +62,8 @@ class Versioner:
         if len(dirs) != 1:
             raise ValueError(f'src/ must have a single folder, got: {dirs}')
 
-        PACKAGE_NAME = dirs[0]
-        self.PACKAGE = path_to_src / PACKAGE_NAME
+        self.package_name = dirs[0]
+        self.PACKAGE = path_to_src / self.package_name
 
         if Path(project_root, 'CHANGELOG.rst').exists():
             self.path_to_changelog = Path(project_root, 'CHANGELOG.rst')
@@ -124,7 +124,7 @@ class Versioner:
 
         return new_version
 
-    def commit_version(self, new_version, tag=False):
+    def commit_version(self, new_version, msg_template, tag=False):
         """
         Replaces version in  __init__ and optionally creates a tag in the git
         repository (also saves a commit)
@@ -134,26 +134,30 @@ class Versioner:
         # replace new version in __init__.py
         replace_in_file(self.PACKAGE / '__init__.py', current, new_version)
 
+        # Run git add and git status
+        print('Adding new changes to the repository...')
+        call(['git', 'add', '--all'])
+        call(['git', 'status'])
+
+        # Commit repo with updated dev version
+        print('Creating new commit release version...')
+        msg = msg_template.format(package_name=self.package_name,
+                                  new_version=new_version)
+        call(['git', 'commit', '-m', msg])
+
         # Create tag
         if tag:
-            # Run git add and git status
-            print('Adding new changes to the repository...')
-            call(['git', 'add', '--all'])
-            call(['git', 'status'])
-
-            # Commit repo with updated dev version
-            print('Creating new commit release version...')
-            msg = 'Release {}'.format(new_version)
-            call(['git', 'commit', '-m', msg])
-
             print('Creating tag {}...'.format(new_version))
-            message = '{} release {}'.format(self.PACKAGE, new_version)
+            message = msg_template.format(package_name=self.package_name,
+                                          new_version=new_version)
             call(['git', 'tag', '-a', new_version, '-m', message])
 
             print('Pushing tags...')
             call(['git', 'push', 'origin', new_version])
 
     def update_changelog_release(self, new_version):
+        """Updates changelog file, adding a new section
+        """
         current_version = self.current_version()
 
         # update CHANGELOG header
@@ -163,30 +167,30 @@ class Versioner:
 
         header_new = make_header(new_version,
                                  self.path_to_changelog,
-                                 add_date=False)
+                                 add_date=True)
 
         replace_in_file(self.path_to_changelog, header_current, header_new)
 
-    def add_changelog_new_section(self, dev_version):
+    def add_changelog_new_dev_section(self, dev_version):
         if self.path_to_changelog.suffix == '.rst':
             start_current = 'CHANGELOG\n========='
         else:
             start_current = '# CHANGELOG'
 
         new_header = make_header(dev_version, self.path_to_changelog)
-        start_new = f'{start_current}\n\n{new_header}\n'
+        start_new = f'{start_current}\n\n{new_header}'
         replace_in_file(self.path_to_changelog, start_current, start_new)
 
 
 def make_header(content, path, add_date=False):
     if add_date:
         today = datetime.datetime.now().strftime('%Y-%m-%d')
-        content += today
+        content += f' ({today})'
 
     if path.suffix == '.md':
-        return f'## {content}\n'
+        return f'## {content}'
     elif path.suffix == '.rst':
-        return f'{content}\n' + '-' * len(content)
+        return f'{content}' + '-' * len(content)
     else:
         raise ValueError('Unsupported format, must be .rst or .md')
 
@@ -214,32 +218,25 @@ def release(project_root='.', tag=True):
         input_confirm(
             f'\n{versioner.path_to_changelog} content:'
             f'\n\n{changelog}\n',
-            'done',
             abort=True)
 
     # Replace version number and create tag
     print('Commiting release version: {}'.format(release))
-    versioner.commit_version(release, tag=tag)
+    versioner.commit_version(
+        release, msg_template='{package_name} release {new_version}', tag=tag)
 
     # Create a new dev version and save it
     bumped_version = versioner.bump_up_version()
 
     print('Creating new section in CHANGELOG...')
-    versioner.add_changelog_new_section(bumped_version)
+    versioner.add_changelog_new_dev_section(bumped_version)
     print('Commiting dev version: {}'.format(bumped_version))
-    versioner.commit_version(bumped_version)
+    versioner.commit_version(
+        bumped_version,
+        msg_template='Bumps up {package_name} to version {new_version}',
+        tag=False)
 
-    # Run git add and git status
-    print('Adding new changes to the repository...')
-    call(['git', 'add', '--all'])
-    call(['git', 'status'])
-
-    # Commit repo with updated dev version
-    print('Creating new commit with new dev version...')
-    msg = 'Bumps up project to version {}'.format(bumped_version)
-    call(['git', 'commit', '-m', msg])
     call(['git', 'push'])
-
     print('Version {} was created, you are now in {}'.format(
         release, bumped_version))
 
@@ -251,10 +248,11 @@ def upload(tag, production):
     print('Checking out tag {}'.format(tag))
     call(['git', 'checkout', tag])
 
-    current = Versioner.current_version()
+    current = Versioner().current_version()
 
     input_confirm('Version in {} tag is {}. Do you want to continue?'.format(
-        tag, current))
+        tag, current),
+                  abort=True)
 
     # create distribution
     call(['rm', '-rf', 'dist/'])
