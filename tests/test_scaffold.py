@@ -5,7 +5,21 @@ from pathlib import Path
 import shutil
 from itertools import chain
 
+import pytest
+
 from ploomber_scaffold import scaffold
+
+
+@pytest.mark.parametrize('name, valid', [
+    ('project', True),
+    ('project123', True),
+    ('pro_jec_t', True),
+    ('pro-ject', False),
+    ('1234', False),
+    ('a project', False),
+])
+def test_is_valid_package_name(name, valid):
+    assert scaffold.is_valid_package_name(name) is valid
 
 
 def test_cli(tmp_directory):

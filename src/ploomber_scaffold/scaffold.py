@@ -19,8 +19,8 @@ def copy_template(path):
 
 
 def is_valid_package_name(package_name):
-    return (re.match(r'^[\w]+$', package_name)
-            and not package_name[0].isnumeric())
+    match = re.match(r'^[\w]+$', package_name) or False
+    return match and not package_name[0].isnumeric()
 
 
 def last_part(project_path):
