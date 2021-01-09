@@ -1,0 +1,5 @@
+graft src/ploomber_scaffold/template
+global-exclude *.py[cod]
+recursive-exclude src/ploomber_scaffold/template/products *
+recursive-exclude src/ploomber_scaffold/template/src/*.egg-info *
+include src/ploomber_scaffold/template/products/.gitkeep

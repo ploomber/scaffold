@@ -1,0 +1,20 @@
+meta:
+  extract_product: False
+
+  source_loader:
+    module: package_name
+  
+  jupyter_hot_reload: True
+
+tasks:
+  - source: package_name.tasks.raw.get
+    product: products/raw/dataset.parquet
+  
+  - source: package_name.tasks.interim.remove_nas
+    product: products/interim/dataset.parquet
+
+  - source: package_name.tasks.clean.add_column
+    product: products/clean/dataset.parquet
+
+  - source: notebooks/plot.py
+    product: products/report.html
