@@ -7,7 +7,13 @@ import shutil
 import re
 from pathlib import Path
 import argparse
-from importlib import resources
+
+try:
+    from importlib import resources
+except ImportError:
+    # python < 3.7
+    import importlib_resources as resources
+
 import ploomber_scaffold
 
 
