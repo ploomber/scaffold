@@ -22,7 +22,7 @@ jobs:
     - name: Setup
       run: |
         pip install invoke
-        invoke setup
+        invoke setup --no-editable
 
     - name: Run tests
       env:
