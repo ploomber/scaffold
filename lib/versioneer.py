@@ -1,3 +1,6 @@
+"""
+Managing project versions
+"""
 import sys
 import ast
 import re
@@ -172,14 +175,17 @@ class Versioner:
         replace_in_file(self.path_to_changelog, header_current, header_new)
 
     def add_changelog_new_dev_section(self, dev_version):
-        if self.path_to_changelog.suffix == '.rst':
-            start_current = 'CHANGELOG\n========='
-        else:
-            start_current = '# CHANGELOG'
+        if self.path_to_changelog:
+            if self.path_to_changelog.suffix == '.rst':
+                start_current = 'CHANGELOG\n========='
+            else:
+                start_current = '# CHANGELOG'
 
-        new_header = make_header(dev_version, self.path_to_changelog)
-        start_new = f'{start_current}\n\n{new_header}'
-        replace_in_file(self.path_to_changelog, start_current, start_new)
+            new_header = make_header(dev_version, self.path_to_changelog)
+            start_new = f'{start_current}\n\n{new_header}'
+            replace_in_file(self.path_to_changelog, start_current, start_new)
+        else:
+            print('No CHANGELOG.{rst,md} found, skipping changelog editing...')
 
 
 def make_header(content, path, add_date=False):
@@ -256,7 +262,7 @@ def upload(tag, production):
 
     # create distribution
     call(['rm', '-rf', 'dist/'])
-    call(['python', 'setup.py', 'sdist', 'bdist_wheel'])
+    call(['python', 'setup.py', 'bdist_wheel'])
 
     print('Publishing to PyPI...')
 
