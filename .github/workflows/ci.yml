@@ -22,7 +22,7 @@ jobs:
     - name: Setup
       run: |
         pip install invoke
-        invoke setup --no-editable
+        invoke setup --version=${{ matrix.python-version }} --no-editable
 
     - name: Run tests
       env:

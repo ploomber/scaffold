@@ -63,10 +63,8 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    keywords=[],
     install_requires=[],
     extras_require={
         'dev': DEV,
     },
-    entry_points={},
 )

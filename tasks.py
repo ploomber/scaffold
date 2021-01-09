@@ -3,11 +3,11 @@ from lib import conda, versioneer
 
 
 @task
-def setup(c, editable=True):
+def setup(c, editable=True, version='3.8'):
     """Setup development environment
     """
     print('Creating conda environment...')
-    c.run('conda create --name scaffold python=3.8 --force --yes')
+    c.run(f'conda create --name scaffold python={version} --force --yes')
     print('Installing package...')
     flag = '--editable' if editable else ''
     conda.run_in_env(c, f'pip install {flag} .[dev]', env='scaffold')
