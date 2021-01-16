@@ -33,6 +33,7 @@ DEV = [
     'nox',
     # ipython not yet compatible with the latest version of jedi
     'jedi==0.17.2',
+    # to make this work in Python < 3.7
     'importlib_resources;python_version<"3.7"',
 ]
 

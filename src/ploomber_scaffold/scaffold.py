@@ -58,7 +58,7 @@ def cli(project_path):
 
     print("""
 Python packages should also have short, all-lowercase names,
-although the use of underscores is discouraged."
+although the use of underscores is discouraged.
 
 Source: https://www.python.org/dev/peps/pep-0008/
 
