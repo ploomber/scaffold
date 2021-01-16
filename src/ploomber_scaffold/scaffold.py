@@ -7,7 +7,13 @@ import shutil
 import re
 from pathlib import Path
 import argparse
-from importlib import resources
+
+try:
+    from importlib import resources
+except ImportError:
+    # python < 3.7
+    import importlib_resources as resources
+
 import ploomber_scaffold
 
 
@@ -19,8 +25,8 @@ def copy_template(path):
 
 
 def is_valid_package_name(package_name):
-    return (re.match(r'^[\w]+$', package_name)
-            and not package_name[0].isnumeric())
+    match = re.match(r'^[\w]+$', package_name) or False
+    return match and not package_name[0].isnumeric()
 
 
 def last_part(project_path):
@@ -52,7 +58,7 @@ def cli(project_path):
 
     print("""
 Python packages should also have short, all-lowercase names,
-although the use of underscores is discouraged."
+although the use of underscores is discouraged.
 
 Source: https://www.python.org/dev/peps/pep-0008/
 
