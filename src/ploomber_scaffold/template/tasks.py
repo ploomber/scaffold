@@ -21,6 +21,7 @@ def setup(c):
     print('Installing package...')
     conda.run_in_env(c, 'pip install --editable .[dev]', env='package_name')
     print('Done! Activate your environment with: conda activate package_name')
+    print('Then run the pipeline with: ploomber build')
 
 
 @task(
