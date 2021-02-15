@@ -1,9 +1,6 @@
-import zipfile
 import os
 import subprocess
 from pathlib import Path
-import shutil
-from itertools import chain
 
 import pytest
 
@@ -22,14 +19,23 @@ def test_is_valid_package_name(name, valid):
     assert scaffold.is_valid_package_name(name) is valid
 
 
-def test_cli(tmp_directory):
+@pytest.fixture(scope='module')
+def setup_env(tmp_path_factory):
+    tmp_target = tmp_path_factory.mktemp('session-wide-tmp-directory')
+
+    old = os.getcwd()
+    os.chdir(tmp_target)
+
     scaffold.cli(project_path='my_new_project')
     os.chdir('my_new_project')
+    subprocess.run(['invoke', 'setup'], check=True)
 
-    # setup command
-    assert not subprocess.run(['invoke', 'setup']).returncode
+    yield tmp_target
 
-    # test command
+    os.chdir(old)
+
+
+def test_invoke_test(setup_env):
     script = """
     eval "$(conda shell.bash hook)"
     conda activate my_new_project
@@ -39,7 +45,8 @@ def test_cli(tmp_directory):
 
     assert not subprocess.run(['bash', 'test.sh']).returncode
 
-    # test run pipeline
+
+def test_ploomber_build(setup_env):
     script = """
     eval "$(conda shell.bash hook)"
     conda activate my_new_project
@@ -49,7 +56,8 @@ def test_cli(tmp_directory):
 
     assert not subprocess.run(['bash', 'build.sh']).returncode
 
-    # test installing project from wheel
+
+def test_ploomber_build_from_wheel(setup_env):
     script = """
     eval "$(conda shell.bash hook)"
     conda activate my_new_project
@@ -63,36 +71,12 @@ def test_cli(tmp_directory):
     assert not subprocess.run(['bash', 'build_from_wheel.sh']).returncode
 
 
-def test_scaffold_wheel_contents(tmp_path):
-    """Make sure the wheel does not contain stuff it shouldn't have
+def test_exploratory_notebook(setup_env):
+    script = """
+    eval "$(conda shell.bash hook)"
+    conda activate my_new_project
+    jupyter nbconvert --to notebook --execute exploratory/example.ipynb
     """
-    if Path('build').exists():
-        shutil.rmtree('build')
+    Path('run_exploratory.sh').write_text(script)
 
-    if Path('dist').exists():
-        shutil.rmtree('dist')
-
-    subprocess.run(['python', 'setup.py', 'bdist_wheel'])
-    whl_name = os.listdir('dist')[0]
-
-    with zipfile.ZipFile(Path('dist', whl_name), 'r') as zip_ref:
-        zip_ref.extractall(tmp_path)
-
-    path = Path(tmp_path, 'ploomber_scaffold', 'template')
-
-    assert not (path / 'dist').exists()
-    assert not (path / 'build').exists()
-    assert not (path / '.nox').exists()
-
-    files_and_dirs = chain(
-        *[dirnames + filenames for _, dirnames, filenames in os.walk(path)])
-
-    hidden = [
-        f for f in files_and_dirs if f.startswith('.')
-        if f not in {'.gitkeep', '.gitignore'}
-    ]
-
-    assert not hidden
-
-    dirs = ['doc', 'exploratory', 'lib', 'products', 'src', 'tests']
-    assert all((path / dir_).exists() for dir_ in dirs)
+    assert not subprocess.run(['bash', 'run_exploratory.sh']).returncode

@@ -23,7 +23,7 @@ def test(c, inplace=False):
     """Run tests
     """
     if inplace:
-        print('Runnin tests in the current environment...')
+        print('Running tests in the current environment...')
         c.run('pytest tests/', pty=True)
     else:
         c.run('nox', pty=True)
