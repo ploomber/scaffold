@@ -7,6 +7,9 @@
 *.json
 *.db
 
+# tests output
+exploratory-tests/
+
 # Exclude everything in the products/ and releases/ sfolder
 products/
 releases/
