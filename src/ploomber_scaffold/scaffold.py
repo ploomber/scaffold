@@ -56,23 +56,16 @@ def render_template(path, package_name):
 def cli(project_path):
     project_path = None if not project_path else Path(project_path)
 
-    print("""
-Python packages should also have short, all-lowercase names,
-although the use of underscores is discouraged.
-
-Source: https://www.python.org/dev/peps/pep-0008/
-
-""")
+    print('Project names should be alphanumeric, all-lowercase.\n'
+          'The first character cannot be numeric.\n')
 
     if project_path is None:
-        project_path = Path(input('Project path: '))
+        project_path = Path(input('Project name: '))
         pkg_name = last_part(project_path)
-        print(f'Package name will be: {pkg_name!r}')
 
         while not is_valid_package_name(pkg_name):
-            print('"%s" is not a valid package identifier, choose another.' %
-                  pkg_name)
-            pkg_name = input('Project path: ')
+            print(f'{pkg_name!r} is not a valid name, choose another.')
+            pkg_name = input('Project name: ')
     else:
         pkg_name = last_part(project_path)
 
@@ -81,9 +74,9 @@ Source: https://www.python.org/dev/peps/pep-0008/
                              'choose another.' % pkg_name)
 
     if project_path.is_dir() and len(os.listdir(project_path)):
-        raise ValueError(f'{project_path!r} is a non-empty directory')
+        raise ValueError(f'{str(project_path)!r} is a non-empty directory')
     elif project_path.is_file():
-        raise ValueError(f'{project_path!r} is an existing file')
+        raise ValueError(f'{str(project_path)!r} is an existing file')
 
     print(f'Copying template to {str(project_path)!r}')
     copy_template(project_path)

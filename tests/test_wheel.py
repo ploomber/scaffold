@@ -26,6 +26,7 @@ def test_scaffold_wheel_contents(tmp_path):
     assert not (path / 'dist').exists()
     assert not (path / 'build').exists()
     assert not (path / '.nox').exists()
+    assert not (path / '__pycache__').exists()
 
     files_and_dirs = chain(
         *[dirnames + filenames for _, dirnames, filenames in os.walk(path)])
@@ -37,5 +38,6 @@ def test_scaffold_wheel_contents(tmp_path):
 
     assert not hidden
 
+    # check template directories
     dirs = ['doc', 'exploratory', 'lib', 'products', 'src', 'tests']
     assert all([(path / dir_).exists() for dir_ in dirs])
