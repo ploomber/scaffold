@@ -9,6 +9,7 @@ from versioneer import Versioner
 import versioneer
 
 
+# FIXME: use unittest.mock.call instead of unittest.mock._Call
 def _call(arg):
     """Shortcut for comparing call objects
     """
@@ -125,6 +126,7 @@ def test_add_changelog_new_dev_section_rst(backup_template):
 
 
 def test_release(backup_template, monkeypatch):
+    raise ValueError
     mock = Mock()
     mock_input = Mock()
     mock_input.side_effect = ['', 'y']
@@ -132,7 +134,7 @@ def test_release(backup_template, monkeypatch):
     monkeypatch.setattr(versioneer, 'call', mock)
     monkeypatch.setattr(versioneer, '_input', mock_input)
 
-    versioneer.release(tag=True)
+    versioneer.version(tag=True)
 
     assert mock.call_args_list == [
         _call(['git', 'add', '--all']),
@@ -163,7 +165,7 @@ def test_release_with_no_changelog(backup_template, monkeypatch, capsys):
     monkeypatch.setattr(versioneer, 'call', mock)
     monkeypatch.setattr(versioneer, '_input', mock_input)
 
-    versioneer.release(tag=True)
+    versioneer.version(tag=True)
 
     captured = capsys.readouterr()
     assert ('No CHANGELOG.{rst,md} found, skipping changelog editing...'
