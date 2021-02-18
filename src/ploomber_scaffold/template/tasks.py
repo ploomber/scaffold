@@ -27,7 +27,7 @@ def setup(c):
     help={
         'inplace':
         'Runs tests in the current environment '
-        '(calling pytest directly), does not generate lock file'
+        '(calling pytest directly). Does not generate lock file'
     })
 def test(c, inplace=False):
     """Run tests and generates lock file
@@ -42,11 +42,13 @@ def test(c, inplace=False):
 @task
 def version(c):
     """
-    Create a new version (more details in CONTRIBUTING.md):
+    Create a new version
     1. Set new stable version in package_name/__init__.py
     2. Update header in CHANGELOG file, and ask to review CHANGELOG
     3. Create commit for new version, create git tag, and push
     4. Set new development version in package_name/__init__.py and CHANGELOG
     5. Commit new development version, and push
+
+    (more details in CONTRIBUTING.md)
     """
     versioneer.version(project_root='.', tag=True)

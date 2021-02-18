@@ -78,10 +78,10 @@ def cli(project_path):
     elif project_path.is_file():
         raise ValueError(f'{str(project_path)!r} is an existing file')
 
-    print(f'Copying template to {str(project_path)!r}')
     copy_template(project_path)
     render_template(project_path, pkg_name)
-    print('Done.')
+    readme_path = project_path / 'README.md'
+    print(f'Done. Check out {readme_path!s} to get started.')
 
 
 if __name__ == '__main__':

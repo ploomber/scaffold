@@ -17,10 +17,10 @@ conda activate package_name
 ## Testing
 
 ```sh
-# creates a fresh virtual environment
+# creates a new virtual environment for testing
 invoke test
 
-# ...or to run tests in the current environment
+# run tests in the current environment
 invoke test --inplace
 ```
 
@@ -29,7 +29,7 @@ invoke test --inplace
 ```sh
 ploomber build
 
-# ..or to start an interactive session
+# start an interactive session
 ploomber interact
 ```
 
