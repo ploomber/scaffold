@@ -201,11 +201,14 @@ def make_header(content, path, add_date=False):
         raise ValueError('Unsupported format, must be .rst or .md')
 
 
-def release(project_root='.', tag=True):
+def version(project_root='.', tag=True):
     """
-    Create a new version for the project: updates __init__.py, CHANGELOG,
-    creates new commit for released version (creating a tag) and commits
-    to a new dev version
+    Create a new version:
+    1. Set new stable version in package_name/__init__.py
+    2. Update header in CHANGELOG file, and ask to review CHANGELOG
+    3. Create commit for new version, create git tag, and push
+    4. Set new development version in package_name/__init__.py, and CHANGELOG
+    5. Commit new development version and push
     """
     versioner = Versioner(project_root=project_root)
 

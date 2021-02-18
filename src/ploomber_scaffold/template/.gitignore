@@ -18,7 +18,7 @@ releases/
 *.whl
 *.zip
 
-# nox temporary data
+# nox temporary environment
 .nox/
 
 #### jupyternotebooks ####

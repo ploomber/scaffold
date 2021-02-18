@@ -1,12 +1,11 @@
 """
-Commands to run common tasks: installing dependencies, setup virtual
-environment and run tests.
+Command line interface.
 
-Requires invoke (pip install invoke). For help run "inv -h", to list
-commands "inv -l"
+Requires invoke (pip install invoke). For help run "invoke -h", to list
+commands "invoke -l" (you can also run the shorthand command "inv")
 
 Source code for simple commands can be included here, for large ones, save it
-in the lib/ folder
+in the lib/ folder and import it here.
 """
 from invoke import task
 from lib import conda, versioneer
@@ -28,10 +27,10 @@ def setup(c):
     help={
         'inplace':
         'Runs tests in the current environment '
-        '(calling pytest directly), otherwise uses nox.'
+        '(calling pytest directly), does not generate lock file'
     })
 def test(c, inplace=False):
-    """Run tests
+    """Run tests and generates lock file
     """
     if inplace:
         print('Running tests in the current environment...')
@@ -41,7 +40,13 @@ def test(c, inplace=False):
 
 
 @task
-def release(c):
-    """Create a new version of this project
+def version(c):
     """
-    versioneer.release(project_root='.', tag=True)
+    Create a new version (more details in CONTRIBUTING.md):
+    1. Set new stable version in package_name/__init__.py
+    2. Update header in CHANGELOG file, and ask to review CHANGELOG
+    3. Create commit for new version, create git tag, and push
+    4. Set new development version in package_name/__init__.py and CHANGELOG
+    5. Commit new development version, and push
+    """
+    versioneer.version(project_root='.', tag=True)
