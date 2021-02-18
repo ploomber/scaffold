@@ -8,6 +8,7 @@ import pytest
 
 # add template/lib to path, we'll be testing those files
 root = Path(__file__).parent.parent
+sys.path.append(str(root / 'src' / 'ploomber_scaffold' / 'template'))
 sys.path.append(str(root / 'src' / 'ploomber_scaffold' / 'template' / 'lib'))
 
 

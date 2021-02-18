@@ -41,6 +41,6 @@ def tests(session):
 
     session.run('pytest', 'tests/')
 
-    print('Generatnig environment.lock.yml...')
+    print('Generating environment.lock.yml...')
     session.run('conda', 'env', 'export', '--prefix',
                 session.virtualenv.location, '--file', 'environment.lock.yml')
