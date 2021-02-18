@@ -126,7 +126,6 @@ def test_add_changelog_new_dev_section_rst(backup_template):
 
 
 def test_release(backup_template, monkeypatch):
-    raise ValueError
     mock = Mock()
     mock_input = Mock()
     mock_input.side_effect = ['', 'y']
