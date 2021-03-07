@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 0.1.3dev
+
 ## 0.1.2 (2021-03-07)
 
 * A few information messages changed for clarity
