@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.1.2dev
+## 0.1.2 (2021-03-07)
 
 * A few information messages changed for clarity
 * Adds a few comments to the sample pipeline for clarity
