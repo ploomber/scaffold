@@ -1,7 +1,4 @@
 meta:
-  # we will declared products here
-  extract_product: False
-
   # load all task.source relative to src/package_name/. If removed, relative
   # paths in task.source will be so to the parent directory of this file.
   source_loader:
