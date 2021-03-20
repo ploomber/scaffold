@@ -264,7 +264,7 @@ def upload(tag, production):
                   abort=True)
 
     # create distribution
-    call(['rm', '-rf', 'dist/'])
+    call(['rm', '-rf', 'dist/', 'build/'])
     call(['python', 'setup.py', 'bdist_wheel'])
 
     print('Publishing to PyPI...')
