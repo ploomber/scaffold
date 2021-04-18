@@ -101,7 +101,7 @@ def test_ploomber_build_from_wheel(setup_env):
     conda activate my_new_project
     pip uninstall my_new_project --yes
     rm -rf dist/ build/
-    python setup.py bdist_wheel
+    python -m build --wheel .
     pip install dist/*
     ploomber build
     """)

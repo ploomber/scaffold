@@ -33,7 +33,7 @@ ploomber build
 ploomber interact
 ```
 
-## Exporting to Kubernetes or Airflow
+## Exporting to Kubernetes or Airflow for large-scale training
 
 If you want to export to Airflow or Kubernetes, add "soopervisor" to your
 dependencies and check out the docs: https://soopervisor.readthedocs.io/

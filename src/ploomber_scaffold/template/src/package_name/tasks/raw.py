@@ -1,11 +1,13 @@
-from pathlib import Path
-
-import numpy as np
 import pandas as pd
+from sklearn import datasets
 
 
-def get(product):
-    df = pd.DataFrame(np.random.rand(100, 2), columns=['a', 'b'])
-    df.loc[:10, 'a'] = np.nan
-    Path(str(product)).parent.mkdir(parents=True, exist_ok=True)
-    df.to_parquet(str(product))
+def get():
+    """Get training data
+    """
+    d = datasets.load_iris()
+    df = pd.DataFrame(d['data'])
+
+    df.columns = d['feature_names']
+    df['target'] = d['target']
+    return df

@@ -17,11 +17,13 @@ REQUIRES = [
     'numpy',
     'pandas',
     'ploomber',
+    'scikit-learn',
 ]
 
-# extra dependencies for dewvelopment. e.g. run tests, build docs,
+# extra dependencies for development. e.g. run tests, build docs,
 # train new models, generate exploratory notebooks, etc
 REQUIRES_DEV = [
+    'build',
     'pytest',
     'nox',
     'pyyaml',
