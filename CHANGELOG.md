@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.1.3dev
+## 0.1.3 (2021-04-18)
 
 * Adds `python-versioneer` replacing our old implementation
 * Moves `pipeline.yaml` to the new default location in `src/`
