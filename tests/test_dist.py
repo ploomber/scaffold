@@ -26,10 +26,9 @@ import pytest
 
 
 def git_tracked_files():
-    out = subprocess.run(['git', 'ls-tree', '-r', 'HEAD', '--name-only'],
-                         check=True,
-                         capture_output=True)
-    return out.stdout.decode().splitlines()
+    out = subprocess.check_output(
+        ['git', 'ls-tree', '-r', 'HEAD', '--name-only'])
+    return out.decode().splitlines()
 
 
 def glob_all(path):
