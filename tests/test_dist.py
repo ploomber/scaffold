@@ -1,3 +1,18 @@
+"""
+Check that source and wheel distribution files contain the right set of files
+
+This covers two scenarios"
+
+Extra files. Some tmp files are generated while developing the project (e.g,
+products when calling "ploomber build" in the sample pipeline).
+
+Missing files. By default, a Python package does not include non .py files,
+to allow them, we have to indicate so in the MANIFEST.in file, but it's easy
+to forget that when adding files.
+
+In both scenarios, we rely compare the contents of the generated
+with the files tracked by git.
+"""
 from itertools import chain
 from glob import iglob
 import os
