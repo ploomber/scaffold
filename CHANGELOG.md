@@ -2,6 +2,11 @@
 
 ## 0.1.3dev
 
+* Adds `python-versioneer` replacing our old implementation
+* Moves `pipeline.yaml` to the new default location in `src/`
+* Replaces example pipeline with one compatible with `OnlineModel`
+* Updates `MANIFEST.in` to prevent temporary files to end up in the distribution file
+
 ## 0.1.2 (2021-03-07)
 
 * A few information messages changed for clarity
