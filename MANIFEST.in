@@ -6,4 +6,5 @@ recursive-exclude src/ploomber_scaffold/template/build *
 recursive-exclude src/ploomber_scaffold/template/src/*.egg-info *
 recursive-exclude src/ploomber_scaffold/template/.pytest_cache *
 recursive-exclude src/ploomber_scaffold/template/exploratory/.ipynb_checkpoints *
+recursive-exclude src/ploomber_scaffold/template/exploratory-tests/ *
 include src/ploomber_scaffold/template/products/.gitkeep

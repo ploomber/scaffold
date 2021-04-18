@@ -1,12 +1,83 @@
+from itertools import chain
+from glob import iglob
 import os
 import subprocess
 from pathlib import Path
 import shutil
-from itertools import chain
 import zipfile
+import tarfile
+
+import pytest
 
 
-def test_scaffold_wheel_contents(tmp_path):
+def git_tracked_files():
+    out = subprocess.run(['git', 'ls-tree', '-r', 'HEAD', '--name-only'],
+                         check=True,
+                         capture_output=True)
+    return out.stdout.decode().splitlines()
+
+
+def glob_all(path):
+    hidden = iglob(str(path / '**' / '.*'), recursive=True)
+    normal = iglob(str(path / '**'), recursive=True)
+    return chain(hidden, normal)
+
+
+def files_in_directory(path, exclude_pyc=True):
+    path = Path(path)
+    files = [
+        str(Path(f).relative_to(path)) for f in glob_all(path)
+        if '__pycache__' not in f and Path(f).is_file()
+    ]
+
+    if exclude_pyc:
+        files = [f for f in files if '.pyc' not in f]
+
+    return files
+
+
+def extract_zip(path, tmp_path):
+    with zipfile.ZipFile(path, 'r') as zip_ref:
+        zip_ref.extractall(tmp_path)
+
+
+def extract_tar(path, tmp_path):
+    with tarfile.open(path, "r:gz") as tar:
+        tar.extractall(tmp_path)
+
+
+def get_dir_name(tmp_path):
+    if any('.dist-info' in f for f in os.listdir(tmp_path)):
+        # wheel
+        return Path(tmp_path, 'package_name', 'assets')
+    else:
+        # source dist
+        dir_name = os.listdir(tmp_path)[0]
+        return Path(tmp_path, dir_name, 'src', 'package_name', 'assets')
+
+
+def assert_same_files(reference, directory):
+    expected = set(reference)
+    existing = set(directory)
+
+    missing = expected - existing
+    extra = existing - expected
+
+    if missing:
+        raise ValueError(f'missing files: {missing}')
+
+    if extra:
+        raise ValueError(f'extra files: {extra}')
+
+
+@pytest.mark.parametrize(
+    'fmt, extractor',
+    [
+        ['bdist_wheel', extract_zip],
+        ['sdist', extract_tar],
+    ],
+)
+def test_dist(fmt, extractor, tmp_path):
     """Make sure the wheel does not contain stuff it shouldn't have
     """
     if Path('build').exists():
@@ -15,29 +86,16 @@ def test_scaffold_wheel_contents(tmp_path):
     if Path('dist').exists():
         shutil.rmtree('dist')
 
-    subprocess.run(['python', 'setup.py', 'bdist_wheel'], check=True)
-    whl_name = os.listdir('dist')[0]
+    subprocess.run(['python', 'setup.py', fmt], check=True)
+    extractor(Path('dist', os.listdir('dist')[0]), tmp_path)
 
-    with zipfile.ZipFile(Path('dist', whl_name), 'r') as zip_ref:
-        zip_ref.extractall(tmp_path)
+    path_dist = get_dir_name(tmp_path)
 
-    path = Path(tmp_path, 'ploomber_scaffold', 'template')
-
-    assert not (path / 'dist').exists()
-    assert not (path / 'build').exists()
-    assert not (path / '.nox').exists()
-    assert not (path / '__pycache__').exists()
-
-    files_and_dirs = chain(
-        *[dirnames + filenames for _, dirnames, filenames in os.walk(path)])
-
-    hidden = [
-        f for f in files_and_dirs if f.startswith('.')
-        if f not in {'.gitkeep', '.gitignore', '.gitattributes'}
+    reference = [
+        str(Path(f).relative_to('src/package_name/template'))
+        for f in git_tracked_files() if 'package_name/template' in f
     ]
 
-    assert not hidden
+    generated = files_in_directory(path_dist, exclude_pyc=False)
 
-    # check template directories
-    dirs = ['doc', 'exploratory', 'lib', 'products', 'src', 'tests']
-    assert all([(path / dir_).exists() for dir_ in dirs])
+    assert_same_files(reference, generated)
