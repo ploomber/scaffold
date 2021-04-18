@@ -11,7 +11,7 @@ def run(script):
     """Run a script and return its returncode
     """
     Path('script.sh').write_text(script)
-    return subprocess.run(['bash', 'script.sh']).returncode
+    return subprocess.run(['bash', 'script.sh'], check=True).returncode
 
 
 @pytest.mark.parametrize('name, valid', [
@@ -27,7 +27,11 @@ def test_is_valid_package_name(name, valid):
 
 
 @pytest.fixture(scope='module')
-def setup_env(tmp_path_factory):
+def setup_env(request, tmp_path_factory):
+    """
+    Configures environment. This takes a while, to re-use existing env
+    call: pytest --cache-env
+    """
     tmp_target = tmp_path_factory.mktemp('session-wide-tmp-directory')
 
     old = os.getcwd()
@@ -35,11 +39,17 @@ def setup_env(tmp_path_factory):
 
     scaffold.cli(project_path='my_new_project')
     os.chdir('my_new_project')
-    subprocess.run(['invoke', 'setup'], check=True)
+
+    if request.config.getoption("--cache-env"):
+        print('Using cached env...')
+    else:
+        subprocess.run(['invoke', 'setup'], check=True)
 
     # versioneer depends on this
     run("""
     git init
+    git config user.email "you@example.com"
+    git config user.name "Your Name"
     git add --all
     git commit -m 'my first commit'
     """)
@@ -47,6 +57,23 @@ def setup_env(tmp_path_factory):
     yield tmp_target
 
     os.chdir(old)
+
+
+def test_check_layout(setup_env):
+    assert Path('src/my_new_project/pipeline.yaml').is_file()
+    assert Path('src/my_new_project/pipeline-features.yaml').is_file()
+
+
+def test_wheel_layout(setup_env):
+    run("""
+    rm -rf dist/ build/
+    python setup.py bdist_wheel
+    cd dist
+    unzip *.whl
+    """)
+
+    assert Path('dist/my_new_project/pipeline.yaml').is_file()
+    assert Path('dist/my_new_project/pipeline-features.yaml').is_file()
 
 
 def test_invoke_test(setup_env):

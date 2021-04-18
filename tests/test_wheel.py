@@ -33,7 +33,7 @@ def test_scaffold_wheel_contents(tmp_path):
 
     hidden = [
         f for f in files_and_dirs if f.startswith('.')
-        if f not in {'.gitkeep', '.gitignore'}
+        if f not in {'.gitkeep', '.gitignore', '.gitattributes'}
     ]
 
     assert not hidden

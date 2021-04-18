@@ -196,16 +196,19 @@ def make_header(content, path, add_date=False):
     if path.suffix == '.md':
         return f'## {content}'
     elif path.suffix == '.rst':
-        return f'{content}' + '-' * len(content)
+        return f'{content}\n' + '-' * len(content)
     else:
         raise ValueError('Unsupported format, must be .rst or .md')
 
 
-def release(project_root='.', tag=True):
+def version(project_root='.', tag=True):
     """
-    Create a new version for the project: updates __init__.py, CHANGELOG,
-    creates new commit for released version (creating a tag) and commits
-    to a new dev version
+    Create a new version:
+    1. Set new stable version in package_name/__init__.py
+    2. Update header in CHANGELOG file, and ask to review CHANGELOG
+    3. Create commit for new version, create git tag, and push
+    4. Set new development version in package_name/__init__.py, and CHANGELOG
+    5. Commit new development version and push
     """
     versioner = Versioner(project_root=project_root)
 
@@ -262,7 +265,7 @@ def upload(tag, production):
 
     # create distribution
     call(['rm', '-rf', 'dist/', 'build/'])
-    call(['python', 'setup.py', 'sdist', 'bdist_wheel'])
+    call(['python', 'setup.py', 'bdist_wheel', 'sdist'])
 
     print('Publishing to PyPI...')
 

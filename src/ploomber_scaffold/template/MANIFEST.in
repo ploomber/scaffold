@@ -1,2 +1,3 @@
 include versioneer.py
 include src/package_name/_version.py
+recursive-include src/package_name env.yaml pipeline.yaml pipeline-features.yaml model.*

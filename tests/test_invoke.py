@@ -12,15 +12,6 @@ from invoke import MockContext, Result
 import tasks
 
 
-def test_version(monkeypatch):
-    m = Mock()
-    monkeypatch.setattr(tasks.versioneer, 'version', m)
-
-    tasks.version(MockContext())
-
-    m.assert_called_with(project_root='.', tag=True)
-
-
 def test_invoke_test_with_nox(monkeypatch):
     c = MockContext(run=Result())
     tasks.test(c)
