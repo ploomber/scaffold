@@ -8,7 +8,7 @@ Source code for simple commands can be included here, for large ones, save it
 in the lib/ folder and import it here.
 """
 from invoke import task
-from lib import conda, versioneer
+from lib import conda
 
 
 @task
@@ -37,18 +37,3 @@ def test(c, inplace=False):
         c.run('pytest tests/', pty=True)
     else:
         c.run('nox', pty=True)
-
-
-@task
-def version(c):
-    """
-    Create a new version
-    1. Set new stable version in package_name/__init__.py
-    2. Update header in CHANGELOG file, and ask to review CHANGELOG
-    3. Create commit for new version, create git tag, and push
-    4. Set new development version in package_name/__init__.py and CHANGELOG
-    5. Commit new development version, and push
-
-    (more details in CONTRIBUTING.md)
-    """
-    versioneer.version(project_root='.', tag=True)

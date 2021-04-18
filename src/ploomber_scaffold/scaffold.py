@@ -39,9 +39,18 @@ def render_template(path, package_name):
     by the user
     """
     for dirpath, _, filenames in os.walk(path):
+        # replace if file has this extension or is .gitignore
         paths = [
-            Path(dirpath, f) for f in filenames if Path(f).suffix in
-            {'.py', '.md', '.yml', '.yaml', '.sh', '.sql'} or f == '.gitignore'
+            Path(dirpath, f) for f in filenames if Path(f).suffix in {
+                '.py',
+                '.md',
+                '.yml',
+                '.yaml',
+                '.sh',
+                '.sql',
+                '.in',
+                '.cfg',
+            } or f in {'.gitignore', '.gitattributes'}
         ]
 
         for p in itertools.chain(paths):

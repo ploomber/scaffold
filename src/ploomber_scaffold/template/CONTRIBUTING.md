@@ -19,4 +19,4 @@ invoke version
 
 And follow instructions.
 
-**Note:** this will create (and push) a tag in your git repository.
+**Note:** this will create a tag in your git repository.

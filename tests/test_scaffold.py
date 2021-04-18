@@ -7,6 +7,13 @@ import pytest
 from ploomber_scaffold import scaffold
 
 
+def run(script):
+    """Run a script and return its returncode
+    """
+    Path('script.sh').write_text(script)
+    return subprocess.run(['bash', 'script.sh']).returncode
+
+
 @pytest.mark.parametrize('name, valid', [
     ('project', True),
     ('project123', True),
@@ -30,6 +37,13 @@ def setup_env(tmp_path_factory):
     os.chdir('my_new_project')
     subprocess.run(['invoke', 'setup'], check=True)
 
+    # versioneer depends on this
+    run("""
+    git init
+    git add --all
+    git commit -m 'my first commit'
+    """)
+
     yield tmp_target
 
     os.chdir(old)
@@ -47,36 +61,32 @@ def test_invoke_test(setup_env):
 
 
 def test_ploomber_build(setup_env):
-    script = """
+    assert not run("""
     eval "$(conda shell.bash hook)"
     conda activate my_new_project
     ploomber build
-    """
-    Path('build.sh').write_text(script)
-
-    assert not subprocess.run(['bash', 'build.sh']).returncode
+    """)
 
 
 def test_ploomber_build_from_wheel(setup_env):
-    script = """
+    assert not run("""
     eval "$(conda shell.bash hook)"
     conda activate my_new_project
     pip uninstall my_new_project --yes
+    rm -rf dist/ build/
     python setup.py bdist_wheel
-    pip install dist/my_new_project-0.1.dev0-py3-none-any.whl
+    pip install dist/*
     ploomber build
-    """
-    Path('build_from_wheel.sh').write_text(script)
-
-    assert not subprocess.run(['bash', 'build_from_wheel.sh']).returncode
+    """)
 
 
 def test_exploratory_notebook(setup_env):
-    script = """
+    assert not run("""
     eval "$(conda shell.bash hook)"
     conda activate my_new_project
     jupyter nbconvert --to notebook --execute exploratory/example.ipynb
-    """
-    Path('run_exploratory.sh').write_text(script)
+    """)
 
-    assert not subprocess.run(['bash', 'run_exploratory.sh']).returncode
+
+def test_versioneer_configured(setup_env):
+    assert not run('python setup.py version')
