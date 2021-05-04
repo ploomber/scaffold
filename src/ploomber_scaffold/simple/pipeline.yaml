@@ -1,0 +1,17 @@
+tasks:
+  - source: tasks.raw.get
+    product: products/raw/get.csv
+
+  - source: tasks.features.sepal
+    product: products/features/sepal.csv
+
+  - source: tasks.features.petal
+    product: products/features/petal.csv
+
+  - source: tasks.features.features
+    product: products/features/features.csv
+
+  - source: notebooks/fit.py
+    product:
+      nb: products/report.html
+      model: products/model.pickle

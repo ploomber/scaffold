@@ -7,21 +7,19 @@ from os.path import splitext
 from setuptools import find_packages
 from setuptools import setup
 
-# NOTE: keep these lists updated as you add more dependencies to your project
-# if you rather have any dependency installed via conda, add it here and in
-# the environment.yml file
-
-# minimum dependencies for deployment
+# deployment dependencies
 REQUIRES = [
-    'pyarrow',
-    'numpy',
     'pandas',
     'ploomber',
     'scikit-learn',
+    # uncomment the next line if you want to upload atifacts to S3...
+    # 'boto3',
+    # uncomment the next line if you want to upload atifacts to Google Cloud
+    # Storage...
+    # 'google-cloud-storage',
 ]
 
-# extra dependencies for development. e.g. run tests, build docs,
-# train new models, generate exploratory notebooks, etc
+# development dependencies (e.g., testing, linting, etc)
 REQUIRES_DEV = [
     'build',
     'pytest',
@@ -31,6 +29,9 @@ REQUIRES_DEV = [
     'flake8',
     'jupyter',
     'matplotlib',
+    # uncomment the next line if you want to export to systems like argo,
+    # airflow or aws
+    # 'soopervisor',
 ]
 
 setup(
@@ -41,9 +42,6 @@ setup(
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
     include_package_data=True,
-    # Include any non-Python files with these extensions, for details:
-    # https://setuptools.readthedocs.io/en/latest/userguide/datafiles.html
-    package_data={"": ["*/*.sql", "*/*.ipynb", "notebooks/*.py"]},
     install_requires=REQUIRES,
     extras_require={
         'dev': REQUIRES_DEV,

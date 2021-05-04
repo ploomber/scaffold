@@ -24,6 +24,7 @@ def read(*names, **kwargs):
 
 
 DEV = [
+    'ploomber',
     'twine',
     'flake8',
     'yapf',

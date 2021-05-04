@@ -1,3 +1,5 @@
 include versioneer.py
 include src/package_name/_version.py
-recursive-include src/package_name env.yaml pipeline.yaml pipeline-features.yaml model.*
+recursive-include src/package_name *.yaml model.*
+graft src/package_name/notebooks
+graft src/package_name/sql

@@ -5,23 +5,17 @@ Requires [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
 ## Setup development environment
 
 ```sh
-pip installl invoke
+# configure dev environment
+ploomber install
 
-# install dependencies
-invoke setup
-
-# activate environment
+# activate conda environment
 conda activate package_name
 ```
 
 ## Testing
 
 ```sh
-# creates a new virtual environment for testing
-invoke test
-
-# run tests in the current environment
-invoke test --inplace
+pytest
 ```
 
 ## Running the pipeline
@@ -33,15 +27,6 @@ ploomber build
 ploomber interact
 ```
 
-## Exporting to Kubernetes or Airflow for large-scale training
+## Exporting to other systems
 
-If you want to export to Airflow or Kubernetes, add "soopervisor" to your
-dependencies and check out the docs: https://soopervisor.readthedocs.io/
-
-```sh
-# export to kubernetes/argo
-soopervisor export
-
-# export to airflow
-soopervisor export-airflow
-```
+[soopervisor](https://soopervisor.readthedocs.io/) allows you to run ploomber projects in other environments. Check out the docs to learn more.

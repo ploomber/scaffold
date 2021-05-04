@@ -7,6 +7,8 @@ import shutil
 import re
 from pathlib import Path
 import argparse
+import click
+from glob import glob
 
 try:
     from importlib import resources
@@ -17,11 +19,53 @@ except ImportError:
 import ploomber_scaffold
 
 
-def copy_template(path):
+def copy_template(path, package):
     """Copy template files to path
     """
     with resources.path(ploomber_scaffold, 'template') as path_to_template:
         shutil.copytree(path_to_template, path)
+
+    if not package:
+        simplify(path)
+
+
+def simplify(path):
+    to_delete = [
+        'MANIFEST.in',
+        'setup.cfg',
+        'setup.py',
+        'tests',
+        'versioneer.py',
+        Path('src', 'package_name', '_version.py'),
+        Path('src', 'package_name', '__init__.py'),
+    ]
+
+    for f in to_delete:
+        path_to_f = path / f
+
+        if path_to_f.is_file():
+            path_to_f.unlink()
+        else:
+            shutil.rmtree(path_to_f)
+
+    base_path = path / 'src' / 'package_name'
+
+    for f in itertools.chain(base_path.glob('**/*'), base_path.glob('*')):
+        f = Path(f)
+
+        if f.is_dir():
+            f.mkdir(exist_ok=True, parents=True)
+        else:
+            target = path / f.relative_to(path / 'src' / 'package_name')
+            target.parent.mkdir(exist_ok=True, parents=True)
+            shutil.copy(f, target)
+
+    shutil.rmtree(path / 'src')
+    Path(path, '.gitattributes').unlink()
+    Path(path, 'pipeline.yaml').unlink()
+
+    with resources.path(ploomber_scaffold, 'simple') as path_to_simple:
+        shutil.copy(path_to_simple / 'pipeline.yaml', path / 'pipeline.yaml')
 
 
 def is_valid_package_name(package_name):
@@ -31,6 +75,12 @@ def is_valid_package_name(package_name):
 
 def last_part(project_path):
     return project_path.parts[-1]
+
+
+def request_project_path():
+    project_path = Path(input('Enter project name: '))
+    pkg_name = last_part(project_path)
+    return project_path, pkg_name
 
 
 def render_template(path, package_name):
@@ -59,22 +109,37 @@ def render_template(path, package_name):
             p.write_text(new)
 
     pkg_dir = path / 'src' / 'package_name'
-    pkg_dir.rename(path / 'src' / package_name)
+
+    if pkg_dir.exists():
+        pkg_dir.rename(path / 'src' / package_name)
 
 
-def cli(project_path):
+def cli(project_path, package=False):
+    """
+    Scaffolds a project
+
+    Parameters
+    ----------
+    project_path : str
+        Project's root folder
+
+    package : bool, default=False
+        Whether to create a packaged project (with a setup.py file and
+        versioneer) or a simple layout
+    """
     project_path = None if not project_path else Path(project_path)
 
-    print('Project names should be alphanumeric, all-lowercase.\n'
-          'The first character cannot be numeric.\n')
+    click.echo('Enter project name:\n* Alphanumeric\n* Lowercase\n'
+               '* May contain underscores\n'
+               '* First character cannot be numeric\n')
 
     if project_path is None:
-        project_path = Path(input('Project name: '))
-        pkg_name = last_part(project_path)
+        project_path, pkg_name = request_project_path()
 
         while not is_valid_package_name(pkg_name):
-            print(f'{pkg_name!r} is not a valid name, choose another.')
-            pkg_name = input('Project name: ')
+            click.echo(
+                f'{pkg_name!r} is not a valid package name, choose another.')
+            project_path, pkg_name = request_project_path()
     else:
         pkg_name = last_part(project_path)
 
@@ -83,14 +148,24 @@ def cli(project_path):
                              'choose another.' % pkg_name)
 
     if project_path.is_dir() and len(os.listdir(project_path)):
-        raise ValueError(f'{str(project_path)!r} is a non-empty directory')
+        raise click.ClickException(
+            f'{str(project_path)!r} is a non-empty directory')
     elif project_path.is_file():
-        raise ValueError(f'{str(project_path)!r} is an existing file')
+        raise click.ClickException(
+            f'{str(project_path)!r} is an existing file')
 
-    copy_template(project_path)
+    copy_template(project_path, package=package)
+
     render_template(project_path, pkg_name)
-    readme_path = project_path / 'README.md'
-    print(f'Done. Check out {readme_path!s} to get started.')
+
+    path_pipeline = project_path / 'src' / pkg_name / 'pipeline.yaml'
+    path_setup = project_path / 'setup.py'
+    click.secho(f'\nDone. Pipeline declaration: {path_pipeline!s}\n',
+                fg='green')
+    click.echo('Next steps:\n')
+    click.secho(f'1. Add extra dependencies to {path_setup!s}\n'
+                f'2. Move to {project_path!s}/ and setup the environment'
+                ' with: ploomber install')
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 import os
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -40,10 +41,15 @@ def setup_env(request, tmp_path_factory):
     scaffold.cli(project_path='my_new_project')
     os.chdir('my_new_project')
 
+    egg_info = Path('src', 'package_name.egg-info')
+
+    if egg_info.exists():
+        shutil.rmtree(egg_info)
+
     if request.config.getoption("--cache-env"):
         print('Using cached env...')
     else:
-        subprocess.run(['invoke', 'setup'], check=True)
+        subprocess.run(['ploomber', 'install'], check=True)
 
     # versioneer depends on this
     run("""
@@ -61,7 +67,6 @@ def setup_env(request, tmp_path_factory):
 
 def test_check_layout(setup_env):
     assert Path('src/my_new_project/pipeline.yaml').is_file()
-    assert Path('src/my_new_project/pipeline-features.yaml').is_file()
 
 
 def test_wheel_layout(setup_env):
@@ -73,14 +78,13 @@ def test_wheel_layout(setup_env):
     """)
 
     assert Path('dist/my_new_project/pipeline.yaml').is_file()
-    assert Path('dist/my_new_project/pipeline-features.yaml').is_file()
 
 
-def test_invoke_test(setup_env):
+def test_pytest(setup_env):
     script = """
     eval "$(conda shell.bash hook)"
     conda activate my_new_project
-    invoke test --inplace
+    pytest
     """
     Path('test.sh').write_text(script)
 
