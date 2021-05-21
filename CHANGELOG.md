@@ -1,6 +1,9 @@
 # CHANGELOG
 
 ## 0.1.4dev
+* Creates non-packaged pipeline by default
+* Packaged pipeline available via the `--package` flag
+* Generates `pip` `requirements.txt` files by default, `environment.yml` available via the `--conda` flag
 
 ## 0.1.3 (2021-04-18)
 
