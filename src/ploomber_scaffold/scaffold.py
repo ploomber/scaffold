@@ -141,16 +141,15 @@ def cli(project_path, package=False, conda=False):
     project_path = None if not project_path else Path(project_path)
 
     click.echo('Enter project name:\n* Alphanumeric\n* Lowercase\n'
-               '* May contain underscores\n'
+               '* Underscores allowed\n'
                '* First character cannot be numeric\n')
 
     if project_path is None:
         project_path, pkg_name = request_project_path()
 
-        # TODO: when package is false, do not check this
         while not is_valid_package_name(pkg_name):
             click.echo(
-                f'{pkg_name!r} is not a valid package name, choose another.')
+                f'{pkg_name!r} is not a valid package name, choose another.\n')
             project_path, pkg_name = request_project_path()
     else:
         pkg_name = last_part(project_path)
@@ -170,14 +169,22 @@ def cli(project_path, package=False, conda=False):
 
     render_template(project_path, pkg_name)
 
-    path_pipeline = project_path / 'src' / pkg_name / 'pipeline.yaml'
-    path_setup = project_path / 'setup.py'
+    if package:
+        path_pipeline = project_path / 'src' / pkg_name / 'pipeline.yaml'
+    else:
+        path_pipeline = project_path / 'pipeline.yaml'
 
-    # TODO: print path depending on pacakge or not
-    # TODO: change add deps message (they should be in env or reqs file)
+    if conda:
+        path_deps = project_path / 'environment.yml'
+        path_deps_dev = project_path / 'environment.dev.yml'
+    else:
+        path_deps = project_path / 'requirements.txt'
+        path_deps_dev = project_path / 'requirements.dev.txt'
+
     click.secho(f'\nDone. Pipeline declaration: {path_pipeline!s}\n',
                 fg='green')
     click.echo('Next steps:\n')
-    click.secho(f'1. Add extra dependencies to {path_setup!s}\n'
-                f'2. Move to {project_path!s}/ and setup the environment'
+    click.secho(f'1. Add deployment dependencies to {path_deps!s}\n'
+                f'2. Add development dependencies to {path_deps_dev!s}\n'
+                f'3. Move to {project_path!s}/ and setup the environment'
                 ' with: ploomber install')
