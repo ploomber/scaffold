@@ -1,5 +1,5 @@
 include versioneer.py
 include src/package_name/_version.py
 recursive-include src/package_name *.yaml model.*
-graft src/package_name/notebooks
+graft src/package_name/scripts
 graft src/package_name/sql

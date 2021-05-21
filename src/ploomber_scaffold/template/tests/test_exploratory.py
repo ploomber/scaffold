@@ -21,4 +21,5 @@ def test_exploratory(name):
     path_to_exploratory_tests.mkdir(exist_ok=True)
 
     pm.execute_notebook(path_to_exploratory / name,
-                        path_to_exploratory_tests / name)
+                        path_to_exploratory_tests / name,
+                        progress_bar=False)

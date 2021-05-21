@@ -6,9 +6,7 @@ import os
 import shutil
 import re
 from pathlib import Path
-import argparse
 import click
-from glob import glob
 
 try:
     from importlib import resources
@@ -19,7 +17,7 @@ except ImportError:
 import ploomber_scaffold
 
 
-def copy_template(path, package):
+def copy_template(path, package, conda):
     """Copy template files to path
     """
     with resources.path(ploomber_scaffold, 'template') as path_to_template:
@@ -27,6 +25,15 @@ def copy_template(path, package):
 
     if not package:
         simplify(path)
+
+    # TODO: remove pytest if not a package
+
+    if conda:
+        (path / 'requirements.txt').unlink()
+        (path / 'requirements.dev.txt').unlink()
+    else:
+        (path / 'environment.yml').unlink()
+        (path / 'environment.dev.yml').unlink()
 
 
 def simplify(path):
@@ -114,7 +121,7 @@ def render_template(path, package_name):
         pkg_dir.rename(path / 'src' / package_name)
 
 
-def cli(project_path, package=False):
+def cli(project_path, package=False, conda=False):
     """
     Scaffolds a project
 
@@ -126,6 +133,10 @@ def cli(project_path, package=False):
     package : bool, default=False
         Whether to create a packaged project (with a setup.py file and
         versioneer) or a simple layout
+
+    conda : bool, default=False
+        If True, it adds a conda environment.yml file otherwise
+        requirements.txt
     """
     project_path = None if not project_path else Path(project_path)
 
@@ -136,6 +147,7 @@ def cli(project_path, package=False):
     if project_path is None:
         project_path, pkg_name = request_project_path()
 
+        # TODO: when package is false, do not check this
         while not is_valid_package_name(pkg_name):
             click.echo(
                 f'{pkg_name!r} is not a valid package name, choose another.')
@@ -154,22 +166,18 @@ def cli(project_path, package=False):
         raise click.ClickException(
             f'{str(project_path)!r} is an existing file')
 
-    copy_template(project_path, package=package)
+    copy_template(project_path, package=package, conda=conda)
 
     render_template(project_path, pkg_name)
 
     path_pipeline = project_path / 'src' / pkg_name / 'pipeline.yaml'
     path_setup = project_path / 'setup.py'
+
+    # TODO: print path depending on pacakge or not
+    # TODO: change add deps message (they should be in env or reqs file)
     click.secho(f'\nDone. Pipeline declaration: {path_pipeline!s}\n',
                 fg='green')
     click.echo('Next steps:\n')
     click.secho(f'1. Add extra dependencies to {path_setup!s}\n'
                 f'2. Move to {project_path!s}/ and setup the environment'
                 ' with: ploomber install')
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Create scaffold')
-    parser.add_argument('--path', type=str, help='Path', default=None)
-    args = parser.parse_args()
-    cli(project_path=args.path)

@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from ploomber_scaffold import scaffold
+from ploomber.cli import install
 
 
 def run(script):
@@ -18,7 +19,7 @@ def run(script):
 @pytest.fixture(scope='module')
 def setup_env(request, tmp_path_factory):
     """
-    Configures environment. This takes a while, to re-use existing env
+    Configures environment. This takes a while, to re-use existing conda env
     call: pytest --cache-env
     """
     tmp_target = tmp_path_factory.mktemp('session-wide-tmp-simple')
@@ -26,7 +27,7 @@ def setup_env(request, tmp_path_factory):
     old = os.getcwd()
     os.chdir(tmp_target)
 
-    scaffold.cli(project_path='my_simple_project', package=False)
+    scaffold.cli(project_path='my_simple_project', conda=False, package=False)
     os.chdir('my_simple_project')
 
     egg_info = Path('src', 'package_name.egg-info')
@@ -37,7 +38,7 @@ def setup_env(request, tmp_path_factory):
     if request.config.getoption("--cache-env"):
         print('Using cached env...')
     else:
-        subprocess.run(['ploomber', 'install'], check=True)
+        install.main()
 
     # versioneer depends on this
     run("""
@@ -59,15 +60,6 @@ def test_check_layout(setup_env):
 
 def test_ploomber_build(setup_env):
     assert not run("""
-    eval "$(conda shell.bash hook)"
-    conda activate my_simple_project
+    source venv-my_simple_project//bin/activate
     ploomber build
     """)
-
-
-# def test_exploratory_notebook(setup_env):
-#     assert not run("""
-#     eval "$(conda shell.bash hook)"
-#     conda activate my_simple_project
-#     jupyter nbconvert --to notebook --execute exploratory/example.ipynb
-#     """)

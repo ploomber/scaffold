@@ -11,7 +11,7 @@ tasks:
   - source: tasks.features.features
     product: products/features/features.csv
 
-  - source: notebooks/fit.py
+  - source: scripts/fit.py
     product:
       nb: products/report.html
       model: products/model.pickle

@@ -3,8 +3,10 @@ import shutil
 import subprocess
 from pathlib import Path
 
+import yaml
 import pytest
 
+from ploomber.cli import install
 from ploomber_scaffold import scaffold
 
 
@@ -30,7 +32,7 @@ def test_is_valid_package_name(name, valid):
 @pytest.fixture(scope='module')
 def setup_env(request, tmp_path_factory):
     """
-    Configures environment. This takes a while, to re-use existing env
+    Configures environment. This takes a while, to re-use existing conda env
     call: pytest --cache-env
     """
     tmp_target = tmp_path_factory.mktemp('session-wide-tmp-directory')
@@ -38,7 +40,7 @@ def setup_env(request, tmp_path_factory):
     old = os.getcwd()
     os.chdir(tmp_target)
 
-    scaffold.cli(project_path='my_new_project')
+    scaffold.cli(project_path='my_new_project', conda=False, package=True)
     os.chdir('my_new_project')
 
     egg_info = Path('src', 'package_name.egg-info')
@@ -49,7 +51,7 @@ def setup_env(request, tmp_path_factory):
     if request.config.getoption("--cache-env"):
         print('Using cached env...')
     else:
-        subprocess.run(['ploomber', 'install'], check=True)
+        install.main()
 
     # versioneer depends on this
     run("""
@@ -71,6 +73,8 @@ def test_check_layout(setup_env):
 
 def test_wheel_layout(setup_env):
     run("""
+    source venv-my_new_project/bin/activate
+    pip install wheel
     rm -rf dist/ build/
     python setup.py bdist_wheel
     cd dist
@@ -82,8 +86,7 @@ def test_wheel_layout(setup_env):
 
 def test_pytest(setup_env):
     script = """
-    eval "$(conda shell.bash hook)"
-    conda activate my_new_project
+    source venv-my_new_project//bin/activate
     pytest
     """
     Path('test.sh').write_text(script)
@@ -93,31 +96,55 @@ def test_pytest(setup_env):
 
 def test_ploomber_build(setup_env):
     assert not run("""
-    eval "$(conda shell.bash hook)"
-    conda activate my_new_project
+    source venv-my_new_project//bin/activate
     ploomber build
     """)
 
 
-def test_ploomber_build_from_wheel(setup_env):
+def test_ploomber_status_from_wheel(setup_env):
     assert not run("""
-    eval "$(conda shell.bash hook)"
-    conda activate my_new_project
+    source venv-my_new_project/bin/activate
+    pip install wheel
     pip uninstall my_new_project --yes
     rm -rf dist/ build/
-    python -m build --wheel .
+    python setup.py bdist_wheel
     pip install dist/*
-    ploomber build
+    ploomber status
     """)
 
 
 def test_exploratory_notebook(setup_env):
     assert not run("""
-    eval "$(conda shell.bash hook)"
-    conda activate my_new_project
+    source venv-my_new_project/bin/activate
     jupyter nbconvert --to notebook --execute exploratory/example.ipynb
     """)
 
 
 def test_versioneer_configured(setup_env):
     assert not run('python setup.py version')
+
+
+def test_conda(tmp_directory):
+    """
+    Instead of running the same tests with conda (takes too long), we check the
+    environments are equivalent
+    """
+    scaffold.cli(project_path='with_conda', conda=True, package=True)
+    scaffold.cli(project_path='with_pip', conda=False, package=True)
+
+    def _get_deps_from_env(name):
+        env = yaml.safe_load(Path('with_conda', name).read_text())
+        return set(env['dependencies'][-1]['pip'])
+
+    def _get_deps_from_reqs(name):
+        lines = Path('with_pip', name).read_text().splitlines()
+        return set(line for line in lines if not line.startswith('#'))
+
+    env = _get_deps_from_env('environment.yml')
+    env_dev = _get_deps_from_env('environment.dev.yml')
+
+    req = _get_deps_from_reqs('requirements.txt')
+    req_dev = _get_deps_from_reqs('requirements.dev.txt')
+
+    assert env == req
+    assert env_dev == req_dev
