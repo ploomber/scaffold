@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 0.2.1dev
+
 ## 0.2 (2021-05-22)
 
 * Creates non-packaged pipeline by default
