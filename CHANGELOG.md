@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.1.4dev
+## 0.2 (2021-05-22)
 
 * Creates non-packaged pipeline by default
 * Packaged pipeline available via the `--package` flag
