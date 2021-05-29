@@ -54,12 +54,19 @@ def setup_env(request, tmp_path_factory):
     os.chdir(old)
 
 
-def test_check_layout(setup_env):
-    assert Path('pipeline.yaml').is_file()
-
-
 def test_ploomber_build(setup_env):
     assert not run("""
     source venv-my_simple_project//bin/activate
     ploomber build
     """)
+
+
+@pytest.mark.parametrize('conda', [True, False])
+def test_folder_layout(tmp_directory, conda):
+    scaffold.cli(project_path='myproj', conda=conda, package=False)
+    os.chdir('myproj')
+    readme = Path('README.md').read_text()
+
+    assert Path('pipeline.yaml').is_file()
+    assert not Path('tests').exists()
+    assert '## Testing\n\n```sh\npytest\n```' not in readme

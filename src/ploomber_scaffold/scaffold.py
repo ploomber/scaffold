@@ -6,7 +6,6 @@ import os
 import shutil
 import re
 from pathlib import Path
-import click
 
 try:
     from importlib import resources
@@ -16,6 +15,9 @@ except ImportError:
 
 import ploomber_scaffold
 
+import click
+from jinja2 import Template
+
 
 def copy_template(path, package, conda):
     """Copy template files to path
@@ -23,10 +25,13 @@ def copy_template(path, package, conda):
     with resources.path(ploomber_scaffold, 'template') as path_to_template:
         shutil.copytree(path_to_template, path)
 
+    path_to_readme = (path / 'README.md')
+    readme = Template(path_to_readme.read_text()).render(package=package,
+                                                         conda=conda)
+    path_to_readme.write_text(readme)
+
     if not package:
         simplify(path)
-
-    # TODO: remove pytest if not a package
 
     if conda:
         (path / 'requirements.txt').unlink()

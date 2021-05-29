@@ -67,10 +67,6 @@ def setup_env(request, tmp_path_factory):
     os.chdir(old)
 
 
-def test_check_layout(setup_env):
-    assert Path('src/my_new_project/pipeline.yaml').is_file()
-
-
 def test_wheel_layout(setup_env):
     run("""
     source venv-my_new_project/bin/activate
@@ -148,3 +144,19 @@ def test_conda(tmp_directory):
 
     assert env == req
     assert env_dev == req_dev
+
+
+@pytest.mark.parametrize('conda', [True, False])
+def test_check_layout(tmp_directory, conda):
+    scaffold.cli(project_path='myproj', conda=conda, package=True)
+    os.chdir('myproj')
+    assert Path('src/myproj/pipeline.yaml').is_file()
+
+
+@pytest.mark.parametrize('conda', [True, False])
+def test_readme_includes_pip_install_command(tmp_directory, conda):
+    scaffold.cli(project_path='myproj', conda=conda, package=True)
+    os.chdir('myproj')
+    readme = Path('README.md').read_text()
+
+    assert 'pip install --editable .' in readme

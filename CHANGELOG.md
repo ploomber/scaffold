@@ -2,6 +2,8 @@
 
 ## 0.2.1dev
 
+* Customizes `README.md` content based on `conda` and `package` flags
+
 ## 0.2 (2021-05-22)
 
 * Creates non-packaged pipeline by default
