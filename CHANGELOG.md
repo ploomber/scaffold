@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.2.1dev
+## 0.2.1 (2021-05-29)
 
 * Customizes `README.md` content based on `conda` and `package` flags
 
