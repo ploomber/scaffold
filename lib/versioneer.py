@@ -8,6 +8,7 @@ import subprocess
 import datetime
 import os
 from pathlib import Path
+import shutil
 
 
 def replace_in_file(path_to_file, original, replacement):
@@ -23,6 +24,12 @@ def replace_in_file(path_to_file, original, replacement):
 
 def call(*args, **kwargs):
     return subprocess.run(*args, **kwargs, check=True)
+
+
+def delete_dirs(*dirs):
+    for dir_ in dirs:
+        if Path(dir_).exists():
+            shutil.rmtree(dir_)
 
 
 def _input(prompt):
@@ -257,14 +264,15 @@ def upload(tag, production):
     print('Checking out tag {}'.format(tag))
     call(['git', 'checkout', tag])
 
-    current = Versioner().current_version()
+    versioner = Versioner()
+    current = versioner.current_version()
 
     input_confirm('Version in {} tag is {}. Do you want to continue?'.format(
         tag, current),
                   abort=True)
 
     # create distribution
-    call(['rm', '-rf', 'dist/', 'build/'])
+    delete_dirs('dist', 'build', f'{versioner.PACKAGE}.egg-info')
     call(['python', 'setup.py', 'bdist_wheel', 'sdist'])
 
     print('Publishing to PyPI...')

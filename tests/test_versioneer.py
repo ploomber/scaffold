@@ -225,10 +225,12 @@ def test_release_with_no_changelog(backup_package_name, monkeypatch, capsys):
 def test_upload(backup_package_name, monkeypatch, production):
     mock = Mock()
     mock_input = Mock()
+    mock_delete = Mock()
     mock_input.side_effect = ['y']
 
     monkeypatch.setattr(versioneer, 'call', mock)
     monkeypatch.setattr(versioneer, '_input', mock_input)
+    monkeypatch.setattr(versioneer, 'delete_dirs', mock_delete)
 
     versioneer.upload(tag='0.1', production=production)
 
@@ -240,7 +242,9 @@ def test_upload(backup_package_name, monkeypatch, production):
 
     assert mock.call_args_list == [
         _call(['git', 'checkout', '0.1']),
-        _call(['rm', '-rf', 'dist/', 'build/']),
         _call(['python', 'setup.py', 'bdist_wheel', 'sdist']),
         upload_call,
     ]
+
+    mock_delete.assert_called_once_with('dist', 'build',
+                                        'src/package_name.egg-info')
