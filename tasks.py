@@ -37,5 +37,7 @@ def release(c):
 
 
 @task
-def upload(c, tag, production=False):
+def upload(c, tag, production=True):
+    """Upload to PyPI (prod by default): inv upload {tag}
+    """
     versioneer.upload(tag, production=production)
