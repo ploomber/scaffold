@@ -1,4 +1,4 @@
-# Notebooks to train a model
+# Notebook to train a model
 
 # +
 import pickle
