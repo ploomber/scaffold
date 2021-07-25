@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 0.2.3dev
+
 ## 0.2.2 (2021-07-25)
 
 * Adds `empty` option to create a `pipeline.yaml` with no tasks
