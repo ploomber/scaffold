@@ -2,6 +2,9 @@
 
 ## 0.2.2dev
 
+* Adds `empty` option to create a `pipeline.yaml` with no tasks
+* Fixes `fit.py `typo 
+
 ## 0.2.1 (2021-05-29)
 
 * Customizes `README.md` content based on `conda` and `package` flags
