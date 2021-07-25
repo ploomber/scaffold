@@ -1,5 +1,6 @@
 graft src/ploomber_scaffold/template
 graft src/ploomber_scaffold/simple
+graft src/ploomber_scaffold/empty
 global-exclude *.py[cod] .DS_Store
 recursive-exclude src/ploomber_scaffold/template/products *
 recursive-exclude src/ploomber_scaffold/template/dist *

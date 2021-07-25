@@ -126,7 +126,7 @@ def render_template(path, package_name):
         pkg_dir.rename(path / 'src' / package_name)
 
 
-def cli(project_path, package=False, conda=False):
+def cli(project_path, package=False, conda=False, empty=False):
     """
     Scaffolds a project
 
@@ -142,6 +142,9 @@ def cli(project_path, package=False, conda=False):
     conda : bool, default=False
         If True, it adds a conda environment.yml file otherwise
         requirements.txt
+
+    empty : bool, default=False
+        If True, it doesn't add sample tasks
     """
     project_path = None if not project_path else Path(project_path)
 
@@ -185,6 +188,22 @@ def cli(project_path, package=False, conda=False):
     else:
         path_deps = project_path / 'requirements.txt'
         path_deps_dev = project_path / 'requirements.dev.txt'
+
+    if empty:
+        if package:
+            pkg_root = project_path / 'src' / pkg_name
+            shutil.rmtree(pkg_root / 'tasks')
+            shutil.rmtree(pkg_root / 'scripts')
+
+            with resources.path(ploomber_scaffold, 'empty') as path_to_empty:
+                shutil.copy(path_to_empty / 'package.yaml', path_pipeline)
+
+        else:
+            shutil.rmtree(project_path / 'tasks')
+            shutil.rmtree(project_path / 'scripts')
+
+            with resources.path(ploomber_scaffold, 'empty') as path_to_empty:
+                shutil.copy(path_to_empty / 'no-package.yaml', path_pipeline)
 
     click.secho(f'\nDone. Pipeline declaration: {path_pipeline!s}\n',
                 fg='green')

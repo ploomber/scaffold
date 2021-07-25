@@ -1,0 +1,11 @@
+meta:
+  # paths in task sources (e.g., scripts/fit.py) are relative to src/package_name
+  source_loader:
+    module: package_name
+
+tasks:
+  # Add tasks here...
+
+  # Example
+  # - source: scripts/fit.py
+  #   product: products/report.html

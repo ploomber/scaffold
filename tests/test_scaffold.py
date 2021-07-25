@@ -70,3 +70,29 @@ def test_with_pip(tmp_directory, package):
     assert 'Requires [Miniconda]' not in readme
     assert 'python -m venv {path-to-venv}' in readme
     assert 'source {path-to-venv}/bin/activate' in readme
+
+
+def test_empty_no_package(tmp_directory):
+    scaffold.cli(project_path='myproj', conda=False, package=False, empty=True)
+
+    expected = (
+        'tasks:\n  # Add tasks here...\n\n  # Example\n  # - '
+        'source: path/to/script.py\n  #   product: products/report.html\n')
+    assert not Path('myproj', 'tasks').exists()
+    assert not Path('myproj', 'scripts').exists()
+    assert Path('myproj', 'pipeline.yaml').read_text() == expected
+
+
+def test_empty_package(tmp_directory):
+    scaffold.cli(project_path='myproj', conda=False, package=True, empty=True)
+
+    expected = ('meta:\n  # paths in task sources (e.g., scripts/fit.py)'
+                ' are relative to src/package_name\n  source_loader:\n    '
+                'module: package_name\n\ntasks:\n  # Add tasks here...\n\n  '
+                '# Example\n  # - source: scripts/fit.py\n  #   product: '
+                'products/report.html\n')
+
+    pkg_root = Path('myproj', 'src', 'myproj')
+    assert not Path(pkg_root, 'tasks').exists()
+    assert not Path(pkg_root, 'scripts').exists()
+    assert Path(pkg_root, 'pipeline.yaml').read_text() == expected

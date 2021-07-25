@@ -1,5 +1,5 @@
 meta:
-  # paths in task sources (e.g., notebooks/fit.py) are relative to src/package_name
+  # paths in task sources (e.g., scripts/fit.py) are relative to src/package_name
   source_loader:
     module: package_name
 
