@@ -19,11 +19,25 @@ import click
 from jinja2 import Template
 
 
+def _resources_path(dir_name):
+    try:
+        with resources.path(ploomber_scaffold, dir_name) as p:
+            out = p
+    # this will happen in python >= 3.9
+    # https://www.mail-archive.com/python-bugs-list@python.org/msg451088.html
+    except IsADirectoryError:
+        with resources.files(ploomber_scaffold) as p:
+            out = p / dir_name
+
+    return out
+
+
 def copy_template(path, package, conda):
     """Copy template files to path
     """
-    with resources.path(ploomber_scaffold, 'template') as path_to_template:
-        shutil.copytree(path_to_template, path)
+    path_to_template = _resources_path('template')
+
+    shutil.copytree(path_to_template, path)
 
     path_to_readme = (path / 'README.md')
     readme = Template(path_to_readme.read_text()).render(package=package,
@@ -76,8 +90,8 @@ def simplify(path):
     Path(path, '.gitattributes').unlink()
     Path(path, 'pipeline.yaml').unlink()
 
-    with resources.path(ploomber_scaffold, 'simple') as path_to_simple:
-        shutil.copy(path_to_simple / 'pipeline.yaml', path / 'pipeline.yaml')
+    path_to_simple = _resources_path('simple')
+    shutil.copy(path_to_simple / 'pipeline.yaml', path / 'pipeline.yaml')
 
 
 def is_valid_package_name(package_name):
@@ -195,15 +209,15 @@ def cli(project_path, package=False, conda=False, empty=False):
             shutil.rmtree(pkg_root / 'tasks')
             shutil.rmtree(pkg_root / 'scripts')
 
-            with resources.path(ploomber_scaffold, 'empty') as path_to_empty:
-                shutil.copy(path_to_empty / 'package.yaml', path_pipeline)
+            path_to_empty = _resources_path('empty')
+            shutil.copy(path_to_empty / 'package.yaml', path_pipeline)
 
         else:
             shutil.rmtree(project_path / 'tasks')
             shutil.rmtree(project_path / 'scripts')
 
-            with resources.path(ploomber_scaffold, 'empty') as path_to_empty:
-                shutil.copy(path_to_empty / 'no-package.yaml', path_pipeline)
+            path_to_empty = _resources_path('empty')
+            shutil.copy(path_to_empty / 'no-package.yaml', path_pipeline)
 
     click.secho(f'\nDone. Pipeline declaration: {path_pipeline!s}\n',
                 fg='green')
