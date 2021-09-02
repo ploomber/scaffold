@@ -2,6 +2,8 @@
 
 ## 0.2.3dev
 
+* Fixes Python 3.9 error due to change in `importlit.resources.path`
+
 ## 0.2.2 (2021-07-25)
 
 * Adds `empty` option to create a `pipeline.yaml` with no tasks
