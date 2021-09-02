@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 0.2.4dev
+
 ## 0.2.3 (2021-09-02)
 
 * Fixes Python 3.9 error due to change in `importlit.resources.path`
