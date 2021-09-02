@@ -45,7 +45,7 @@ setup(
     long_description=None,
     author=None,
     author_email=None,
-    url='https://github.com/ploomber/ploomber-scaffold',
+    url='https://github.com/ploomber/scaffold',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     include_package_data=True,
