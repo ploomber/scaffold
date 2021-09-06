@@ -246,5 +246,5 @@ def test_upload(backup_package_name, monkeypatch, production):
         upload_call,
     ]
 
-    mock_delete.assert_called_once_with('dist', 'build',
-                                        'src/package_name.egg-info')
+    mock_delete.assert_called_once_with(
+        'dist', 'build', str(Path('src', 'package_name.egg-info')))

@@ -8,4 +8,4 @@ tasks:
 
   # Example
   # - source: scripts/fit.py
-  #   product: products/report.html
+  #   product: products/report.ipynb

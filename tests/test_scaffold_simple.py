@@ -1,19 +1,12 @@
 import shutil
 import os
-import subprocess
 from pathlib import Path
 
 import pytest
 
 from ploomber_scaffold import scaffold
 from ploomber.cli import install
-
-
-def run(script):
-    """Run a script and return its returncode
-    """
-    Path('script.sh').write_text(script)
-    return subprocess.run(['bash', 'script.sh'], check=True).returncode
+from utils import run, activate_cmd
 
 
 @pytest.fixture(scope='module')
@@ -38,7 +31,7 @@ def setup_env(request, tmp_path_factory):
     if request.config.getoption("--cache-env"):
         print('Using cached env...')
     else:
-        install.main()
+        install.main(use_lock=False)
 
     # versioneer depends on this
     run("""
@@ -46,7 +39,7 @@ def setup_env(request, tmp_path_factory):
     git config user.email "you@example.com"
     git config user.name "Your Name"
     git add --all
-    git commit -m 'my first commit'
+    git commit -m "my first commit"
     """)
 
     yield tmp_target
@@ -55,8 +48,8 @@ def setup_env(request, tmp_path_factory):
 
 
 def test_ploomber_build(setup_env):
-    assert not run("""
-    source venv-my_simple_project//bin/activate
+    assert not run(f"""
+    {activate_cmd('venv-my_simple_project')}
     ploomber build
     """)
 

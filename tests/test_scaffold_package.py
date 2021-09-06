@@ -1,6 +1,5 @@
 import os
 import shutil
-import subprocess
 from pathlib import Path
 
 import yaml
@@ -8,25 +7,16 @@ import pytest
 
 from ploomber.cli import install
 from ploomber_scaffold import scaffold
+from utils import run, activate_cmd
 
 
-def run(script):
-    """Run a script and return its returncode
-    """
-    Path('script.sh').write_text(script)
-    return subprocess.run(['bash', 'script.sh'], check=True).returncode
+@pytest.fixture
+def clean_dist():
+    if Path('dist').exists():
+        shutil.rmtree('dist')
 
-
-@pytest.mark.parametrize('name, valid', [
-    ('project', True),
-    ('project123', True),
-    ('pro_jec_t', True),
-    ('pro-ject', False),
-    ('1234', False),
-    ('a project', False),
-])
-def test_is_valid_package_name(name, valid):
-    assert scaffold.is_valid_package_name(name) is valid
+    if Path('build').exists():
+        shutil.rmtree('build')
 
 
 @pytest.fixture(scope='module')
@@ -51,7 +41,7 @@ def setup_env(request, tmp_path_factory):
     if request.config.getoption("--cache-env"):
         print('Using cached env...')
     else:
-        install.main()
+        install.main(use_lock=False)
 
     # versioneer depends on this
     run("""
@@ -59,7 +49,7 @@ def setup_env(request, tmp_path_factory):
     git config user.email "you@example.com"
     git config user.name "Your Name"
     git add --all
-    git commit -m 'my first commit'
+    git commit -m "my first commit"
     """)
 
     yield tmp_target
@@ -67,51 +57,65 @@ def setup_env(request, tmp_path_factory):
     os.chdir(old)
 
 
-def test_wheel_layout(setup_env):
-    run("""
-    source venv-my_new_project/bin/activate
+@pytest.mark.parametrize('name, valid', [
+    ('project', True),
+    ('project123', True),
+    ('pro_jec_t', True),
+    ('pro-ject', False),
+    ('1234', False),
+    ('a project', False),
+])
+def test_is_valid_package_name(name, valid):
+    assert scaffold.is_valid_package_name(name) is valid
+
+
+def test_wheel_layout(setup_env, clean_dist):
+    run(f"""
+    {activate_cmd('venv-my_new_project')}
     pip install wheel
-    rm -rf dist/ build/
     python setup.py bdist_wheel
-    cd dist
-    unzip *.whl
     """)
+
+    filename = os.listdir('dist')[0]
+    shutil.unpack_archive(str(Path('dist', filename)), 'dist', format='zip')
 
     assert Path('dist/my_new_project/pipeline.yaml').is_file()
 
 
 def test_pytest(setup_env):
-    script = """
-    source venv-my_new_project//bin/activate
+    assert not run(f"""
+    {activate_cmd('venv-my_new_project')}
     pytest
-    """
-    Path('test.sh').write_text(script)
-
-    assert not subprocess.run(['bash', 'test.sh']).returncode
+    """)
 
 
 def test_ploomber_build(setup_env):
-    assert not run("""
-    source venv-my_new_project//bin/activate
+    assert not run(f"""
+    {activate_cmd('venv-my_new_project')}
     ploomber build
     """)
 
 
-def test_ploomber_status_from_wheel(setup_env):
-    assert not run("""
-    source venv-my_new_project/bin/activate
+def test_ploomber_status_from_wheel(setup_env, clean_dist):
+    assert not run(f"""
+    {activate_cmd('venv-my_new_project')}
     pip install wheel
     pip uninstall my_new_project --yes
-    rm -rf dist/ build/
     python setup.py bdist_wheel
-    pip install dist/*
+    """)
+
+    dist_path = str(Path('dist', os.listdir('dist')[0]))
+
+    assert not run(f"""
+    {activate_cmd('venv-my_new_project')}
+    pip install {dist_path}
     ploomber status
     """)
 
 
 def test_exploratory_notebook(setup_env):
-    assert not run("""
-    source venv-my_new_project/bin/activate
+    assert not run(f"""
+    {activate_cmd('venv-my_new_project')}
     jupyter nbconvert --to notebook --execute exploratory/example.ipynb
     """)
 

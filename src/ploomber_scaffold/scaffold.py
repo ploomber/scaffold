@@ -20,14 +20,14 @@ from jinja2 import Template
 
 
 def _resources_path(dir_name):
-    try:
-        with resources.path(ploomber_scaffold, dir_name) as p:
-            out = p
-    # this will happen in python >= 3.9
+    # resources.files added on python 3.9
     # https://www.mail-archive.com/python-bugs-list@python.org/msg451088.html
-    except IsADirectoryError:
+    if hasattr(resources, 'files'):
         with resources.files(ploomber_scaffold) as p:
             out = p / dir_name
+    else:
+        with resources.path(ploomber_scaffold, dir_name) as p:
+            out = p
 
     return out
 

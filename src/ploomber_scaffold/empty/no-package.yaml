@@ -3,4 +3,4 @@ tasks:
 
   # Example
   # - source: path/to/script.py
-  #   product: products/report.html
+  #   product: products/report.ipynb

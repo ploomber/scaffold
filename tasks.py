@@ -1,9 +1,10 @@
+import shutil
 from invoke import task
 from lib import conda, versioneer
 
 
 @task
-def setup(c, editable=True, version='3.8'):
+def setup(c, editable=True, version='3.9'):
     """Setup development environment
     """
     print('Creating conda environment...')
@@ -11,6 +12,11 @@ def setup(c, editable=True, version='3.8'):
     print('Installing package...')
     flag = '--editable' if editable else ''
     conda.run_in_env(c, f'pip install {flag} .[dev]', env='scaffold')
+
+    if not shutil.which('git'):
+        print(
+            '[WARNING] git is required to run tests but it is not installed...'
+        )
 
 
 @task(

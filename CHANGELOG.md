@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## 0.2.4dev
+* Fixes `PermissionError` on Windows (#5)
 
 ## 0.2.3 (2021-09-02)
 

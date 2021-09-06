@@ -9,34 +9,38 @@ import pytest
 from ploomber_scaffold import scaffold
 
 
+def _path_str(s):
+    return str(Path(s))
+
+
 @pytest.mark.parametrize('conda, package, deps, dev_deps, expected_pipeline', [
     [
         False,
         False,
-        'myproj/requirements.txt',
-        'myproj/requirements.dev.txt',
-        'myproj/pipeline.yaml',
+        _path_str('myproj/requirements.txt'),
+        _path_str('myproj/requirements.dev.txt'),
+        _path_str('myproj/pipeline.yaml'),
     ],
     [
         False,
         True,
-        'myproj/requirements.txt',
-        'myproj/requirements.dev.txt',
-        'myproj/src/myproj/pipeline.yaml',
+        _path_str('myproj/requirements.txt'),
+        _path_str('myproj/requirements.dev.txt'),
+        _path_str('myproj/src/myproj/pipeline.yaml'),
     ],
     [
         True,
         False,
-        'myproj/environment.yml',
-        'myproj/environment.dev.yml',
-        'myproj/pipeline.yaml',
+        _path_str('myproj/environment.yml'),
+        _path_str('myproj/environment.dev.yml'),
+        _path_str('myproj/pipeline.yaml'),
     ],
     [
         True,
         True,
-        'myproj/environment.yml',
-        'myproj/environment.dev.yml',
-        'myproj/src/myproj/pipeline.yaml',
+        _path_str('myproj/environment.yml'),
+        _path_str('myproj/environment.dev.yml'),
+        _path_str('myproj/src/myproj/pipeline.yaml'),
     ],
 ])
 def test_output_message(tmp_directory, capsys, conda, package, deps, dev_deps,
@@ -77,7 +81,7 @@ def test_empty_no_package(tmp_directory):
 
     expected = (
         'tasks:\n  # Add tasks here...\n\n  # Example\n  # - '
-        'source: path/to/script.py\n  #   product: products/report.html\n')
+        'source: path/to/script.py\n  #   product: products/report.ipynb\n')
     assert not Path('myproj', 'tasks').exists()
     assert not Path('myproj', 'scripts').exists()
     assert Path('myproj', 'pipeline.yaml').read_text() == expected
@@ -90,7 +94,7 @@ def test_empty_package(tmp_directory):
                 ' are relative to src/package_name\n  source_loader:\n    '
                 'module: package_name\n\ntasks:\n  # Add tasks here...\n\n  '
                 '# Example\n  # - source: scripts/fit.py\n  #   product: '
-                'products/report.html\n')
+                'products/report.ipynb\n')
 
     pkg_root = Path('myproj', 'src', 'myproj')
     assert not Path(pkg_root, 'tasks').exists()

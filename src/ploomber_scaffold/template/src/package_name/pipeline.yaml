@@ -19,5 +19,5 @@ tasks:
 
   - source: scripts/fit.py
     product:
-      nb: products/report.html
+      nb: products/report.ipynb
       model: products/model.pickle
