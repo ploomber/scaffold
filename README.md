@@ -1,7 +1,8 @@
 # Scaffold
 
 ![CI](https://github.com/ploomber/scaffold/workflows/CI/badge.svg)
-
+![CI macOS](https://github.com/ploomber/scaffold/workflows/CI%20macOS/badge.svg)
+![CI Windows](https://github.com/ploomber/scaffold/workflows/CI%20Windows/badge.svg)
 
 Scaffold creates a complete structure for Data Science projects.
 
