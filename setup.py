@@ -36,6 +36,8 @@ DEV = [
     'jedi==0.17.2',
     # to make this work in Python < 3.7
     'importlib_resources;python_version<"3.7"',
+    # some tests generate wheels,
+    'wheel',
 ]
 
 setup(

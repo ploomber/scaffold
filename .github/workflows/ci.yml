@@ -17,10 +17,8 @@ jobs:
     - name: Setup
       run: |
         pip install invoke
-        invoke setup --version=${{ matrix.python-version }} --no-editable
+        invoke setup --inline --no-editable
 
     - name: Run tests
       run: |
-        eval "$(conda shell.bash hook)"
-        conda activate scaffold
-        invoke test --inplace
+        invoke test --inline

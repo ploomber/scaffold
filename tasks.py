@@ -4,14 +4,23 @@ from lib import conda, versioneer
 
 
 @task
-def setup(c, editable=True, version='3.9'):
+def setup(c, editable=True, version='3.9', inline=False):
     """Setup development environment
     """
-    print('Creating conda environment...')
-    c.run(f'conda create --name scaffold python={version} --force --yes')
+    if inline:
+        print('Installing in current environment...')
+    else:
+        print('Creating conda environment...')
+        c.run(f'conda create --name scaffold python={version} --force --yes')
+
     print('Installing package...')
     flag = '--editable' if editable else ''
-    conda.run_in_env(c, f'pip install {flag} .[dev]', env='scaffold')
+    pip_cmd = f'pip install {flag} .[dev]'
+
+    if inline:
+        c.run(pip_cmd)
+    else:
+        conda.run_in_env(c, pip_cmd, env='scaffold')
 
     if not shutil.which('git'):
         print(
@@ -21,18 +30,18 @@ def setup(c, editable=True, version='3.9'):
 
 @task(
     help={
-        'inplace':
+        'inline':
         'Runs tests in the current environment '
         '(calling pytest directly), otherwise uses nox.'
     })
-def test(c, inplace=False):
+def test(c, inline=False, pty=True):
     """Run tests
     """
-    if inplace:
+    if inline:
         print('Running tests in the current environment...')
-        c.run('pytest tests/', pty=True)
+        c.run('pytest tests/', pty=pty)
     else:
-        c.run('nox', pty=True)
+        c.run('nox', pty=pty)
 
 
 @task
