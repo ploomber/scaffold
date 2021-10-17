@@ -5,7 +5,6 @@ from pathlib import Path
 import pytest
 
 _root = Path(__file__).parent.parent
-sys.path.append(str(_root / 'lib'))
 sys.path.append(str(_root / 'src' / 'ploomber_scaffold' / 'template'))
 
 
