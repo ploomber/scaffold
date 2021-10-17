@@ -1,6 +1,7 @@
 import shutil
 from invoke import task
-from lib import conda, versioneer
+from lib import conda
+from pkgmt import versioneer
 
 
 @task
