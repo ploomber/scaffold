@@ -1,7 +1,6 @@
 import shutil
 from invoke import task
 from lib import conda
-from pkgmt import versioneer
 
 
 @task
@@ -49,6 +48,7 @@ def test(c, inline=False, pty=True):
 def release(c):
     """Create a new version of this project
     """
+    from pkgmt import versioneer
     versioneer.version(project_root='.', tag=True)
 
 
@@ -56,4 +56,5 @@ def release(c):
 def upload(c, tag, production=True):
     """Upload to PyPI (prod by default): inv upload {tag}
     """
+    from pkgmt import versioneer
     versioneer.upload(tag, production=production)
