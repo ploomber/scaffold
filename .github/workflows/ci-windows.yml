@@ -20,5 +20,7 @@ jobs:
         invoke setup --inline --no-editable
 
     - name: Run tests
+      env:
+        PLOOMBER_STATS_ENABLED: false
       run: |
         invoke test --inline --no-pty
