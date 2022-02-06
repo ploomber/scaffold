@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.2.5dev
+## 0.2.5 (2022-02-06)
 * Allowing hyphens (`-`) in project names if not using the `package` option
 * Clearer error and confirmation messages
 
