@@ -3,10 +3,12 @@ Common tests for simple and package versions
 """
 import os
 from pathlib import Path
+from unittest.mock import Mock
 
 import pytest
 
 from ploomber_scaffold import scaffold
+from ploomber_scaffold.exceptions import ScaffoldError
 
 
 def _path_str(s):
@@ -100,3 +102,33 @@ def test_empty_package(tmp_directory):
     assert not Path(pkg_root, 'tasks').exists()
     assert not Path(pkg_root, 'scripts').exists()
     assert Path(pkg_root, 'pipeline.yaml').read_text() == expected
+
+
+@pytest.mark.parametrize('name, package', [
+    ['my-project', False],
+    ['my_project', True],
+])
+def test_accepts_dashes_if_non_package(tmp_directory, name, package):
+    scaffold.cli(project_path=name, conda=False, package=package, empty=True)
+
+
+def test_rejects_dashes_if_package(tmp_directory):
+    with pytest.raises(ScaffoldError) as excinfo:
+        scaffold.cli(project_path='my-project',
+                     conda=False,
+                     package=True,
+                     empty=True)
+
+    assert 'is not a valid package identifier' in str(excinfo.value)
+
+
+def test_doesnt_show_instructions_if_name_passed(monkeypatch, tmp_directory):
+    mock = Mock()
+    monkeypatch.setattr(scaffold, '_echo_instructions', mock)
+
+    scaffold.cli(project_path='my-project',
+                 conda=False,
+                 package=False,
+                 empty=True)
+
+    mock.assert_not_called()

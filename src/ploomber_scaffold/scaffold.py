@@ -14,6 +14,7 @@ except ImportError:
     import importlib_resources as resources
 
 import ploomber_scaffold
+from ploomber_scaffold.exceptions import ScaffoldError
 
 import click
 from jinja2 import Template
@@ -99,6 +100,11 @@ def is_valid_package_name(package_name):
     return match and not package_name[0].isnumeric()
 
 
+def is_valid_project_name(project_name):
+    match = re.match(r'^[\w-]+$', project_name)
+    return True if match else False
+
+
 def last_part(project_path):
     return project_path.parts[-1]
 
@@ -140,6 +146,12 @@ def render_template(path, package_name):
         pkg_dir.rename(path / 'src' / package_name)
 
 
+def _echo_instructions():
+    click.echo('Enter project name:\n* Alphanumeric\n* Lowercase\n'
+               '* Underscores allowed\n'
+               '* First character cannot be numeric\n')
+
+
 def cli(project_path, package=False, conda=False, empty=False):
     """
     Scaffolds a project
@@ -161,24 +173,23 @@ def cli(project_path, package=False, conda=False, empty=False):
         If True, it doesn't add sample tasks
     """
     project_path = None if not project_path else Path(project_path)
-
-    click.echo('Enter project name:\n* Alphanumeric\n* Lowercase\n'
-               '* Underscores allowed\n'
-               '* First character cannot be numeric\n')
+    check_name = is_valid_package_name if package else is_valid_project_name
 
     if project_path is None:
+        _echo_instructions()
+
         project_path, pkg_name = request_project_path()
 
-        while not is_valid_package_name(pkg_name):
+        while not check_name(pkg_name):
             click.echo(
                 f'{pkg_name!r} is not a valid package name, choose another.\n')
             project_path, pkg_name = request_project_path()
     else:
         pkg_name = last_part(project_path)
 
-        if not is_valid_package_name(pkg_name):
-            raise ValueError('"%s" is not a valid package identifier, '
-                             'choose another.' % pkg_name)
+        if not check_name(pkg_name):
+            raise ScaffoldError('"%s" is not a valid package identifier, '
+                                'choose another.' % pkg_name)
 
     if project_path.is_dir() and len(os.listdir(project_path)):
         raise click.ClickException(

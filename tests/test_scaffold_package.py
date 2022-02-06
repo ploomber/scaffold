@@ -68,6 +68,16 @@ def setup_env(request, tmp_path_factory):
 def test_is_valid_package_name(name, valid):
     assert scaffold.is_valid_package_name(name) is valid
 
+@pytest.mark.parametrize('name, valid', [
+    ('project', True),
+    ('project123', True),
+    ('pro_jec_t', True),
+    ('pro-ject', True),
+    ('1234', True),
+    ('a project', False),
+])
+def test_is_valid_project_name(name, valid):
+    assert scaffold.is_valid_project_name(name) is valid
 
 def test_wheel_layout(setup_env, clean_dist):
     run(f"""
