@@ -15,44 +15,39 @@ def _path_str(s):
     return str(Path(s))
 
 
-@pytest.mark.parametrize('conda, package, deps, dev_deps, expected_pipeline', [
+@pytest.mark.parametrize('conda, package, deps, expected_pipeline', [
     [
         False,
         False,
         _path_str('myproj/requirements.txt'),
-        _path_str('myproj/requirements.dev.txt'),
         _path_str('myproj/pipeline.yaml'),
     ],
     [
         False,
         True,
         _path_str('myproj/requirements.txt'),
-        _path_str('myproj/requirements.dev.txt'),
         _path_str('myproj/src/myproj/pipeline.yaml'),
     ],
     [
         True,
         False,
         _path_str('myproj/environment.yml'),
-        _path_str('myproj/environment.dev.yml'),
         _path_str('myproj/pipeline.yaml'),
     ],
     [
         True,
         True,
         _path_str('myproj/environment.yml'),
-        _path_str('myproj/environment.dev.yml'),
         _path_str('myproj/src/myproj/pipeline.yaml'),
     ],
 ])
-def test_output_message(tmp_directory, capsys, conda, package, deps, dev_deps,
+def test_output_message(tmp_directory, capsys, conda, package, deps,
                         expected_pipeline):
     scaffold.cli(project_path='myproj', conda=conda, package=package)
     captured = capsys.readouterr()
 
-    assert f'Pipeline declaration: {expected_pipeline}' in captured.out
-    assert f'Add deployment dependencies to {deps}' in captured.out
-    assert f'Add development dependencies to {dev_deps}' in captured.out
+    assert f'Pipeline at: {expected_pipeline}' in captured.out
+    assert f'Add dependencies to {deps}' in captured.out
 
 
 @pytest.mark.parametrize('package', [True, False])
@@ -119,7 +114,7 @@ def test_rejects_dashes_if_package(tmp_directory):
                      package=True,
                      empty=True)
 
-    assert 'is not a valid package identifier' in str(excinfo.value)
+    assert 'is not a valid name' in str(excinfo.value)
 
 
 def test_doesnt_show_instructions_if_name_passed(monkeypatch, tmp_directory):
@@ -132,3 +127,17 @@ def test_doesnt_show_instructions_if_name_passed(monkeypatch, tmp_directory):
                  empty=True)
 
     mock.assert_not_called()
+
+
+def test_shows_instructions_if_incorrect_name_passed(monkeypatch,
+                                                     tmp_directory):
+    mock = Mock()
+    monkeypatch.setattr(scaffold, '_get_instructions', mock)
+
+    with pytest.raises(ScaffoldError):
+        scaffold.cli(project_path='my project',
+                     conda=False,
+                     package=False,
+                     empty=True)
+
+    mock.assert_called_once()

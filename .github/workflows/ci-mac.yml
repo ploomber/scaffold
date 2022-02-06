@@ -16,7 +16,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Setup
       run: |
-        pip install "pip<22"
+        pip install "pip<22" --upgrade
         pip install invoke
         invoke setup --inline --no-editable
 

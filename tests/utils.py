@@ -4,13 +4,19 @@ import sys
 from pathlib import Path
 
 
-def run(script):
+def run(script, raise_=False):
     """Run a script and return its returncode
     """
     Path('script.sh' if os.name == 'posix' else 'script.bat').write_text(
         script)
     cmd = ['bash', 'script.sh'] if os.name == 'posix' else ['script.bat']
-    return subprocess.run(cmd, check=True).returncode
+
+    code = subprocess.run(cmd, check=True).returncode
+
+    if code and raise_:
+        raise RuntimeError(f'Failed to execute: {script}')
+
+    return code
 
 
 def activate_cmd(path):

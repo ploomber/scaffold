@@ -43,8 +43,8 @@ def setup_env(request, tmp_path_factory):
     else:
         install.main(use_lock=False)
 
-    # versioneer depends on this
     run("""
+    # versioneer depends on this
     git init
     git config user.email "you@example.com"
     git config user.name "Your Name"
@@ -68,6 +68,7 @@ def setup_env(request, tmp_path_factory):
 def test_is_valid_package_name(name, valid):
     assert scaffold.is_valid_package_name(name) is valid
 
+
 @pytest.mark.parametrize('name, valid', [
     ('project', True),
     ('project123', True),
@@ -78,6 +79,7 @@ def test_is_valid_package_name(name, valid):
 ])
 def test_is_valid_project_name(name, valid):
     assert scaffold.is_valid_project_name(name) is valid
+
 
 def test_wheel_layout(setup_env, clean_dist):
     run(f"""

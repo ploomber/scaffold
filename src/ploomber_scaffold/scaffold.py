@@ -146,10 +146,28 @@ def render_template(path, package_name):
         pkg_dir.rename(path / 'src' / package_name)
 
 
-def _echo_instructions():
-    click.echo('Enter project name:\n* Alphanumeric\n* Lowercase\n'
-               '* Underscores allowed\n'
-               '* First character cannot be numeric\n')
+def _echo_instructions(package, with_prompt=False):
+    text = _get_instructions(package)
+
+    if with_prompt:
+        text + '\nEnter project name:'
+
+    click.echo(text)
+
+
+def _get_instructions(package):
+    if package:
+        return ('\n\n* Alphanumeric (lowercase), underscore (_) allowed\n'
+                '* First character cannot be numeric\n')
+    else:
+        return ('\n\n* Alphanumeric (lowercase), underscore '
+                '(_), hyphen (-) allowed\n'
+                '* First character cannot be numeric\n')
+
+
+def _get_error_message(package, pkg_name):
+    return (f'{pkg_name!r} is not a valid name, '
+            f'choose another. {_get_instructions(package)}')
 
 
 def cli(project_path, package=False, conda=False, empty=False):
@@ -176,20 +194,18 @@ def cli(project_path, package=False, conda=False, empty=False):
     check_name = is_valid_package_name if package else is_valid_project_name
 
     if project_path is None:
-        _echo_instructions()
+        _echo_instructions(package=package, with_prompt=True)
 
         project_path, pkg_name = request_project_path()
 
         while not check_name(pkg_name):
-            click.echo(
-                f'{pkg_name!r} is not a valid package name, choose another.\n')
+            click.echo(_get_error_message(package, pkg_name))
             project_path, pkg_name = request_project_path()
     else:
         pkg_name = last_part(project_path)
 
         if not check_name(pkg_name):
-            raise ScaffoldError('"%s" is not a valid package identifier, '
-                                'choose another.' % pkg_name)
+            raise ScaffoldError(_get_error_message(package, pkg_name))
 
     if project_path.is_dir() and len(os.listdir(project_path)):
         raise ScaffoldError(f'{str(project_path)!r} is a non-empty directory')
@@ -207,10 +223,8 @@ def cli(project_path, package=False, conda=False, empty=False):
 
     if conda:
         path_deps = project_path / 'environment.yml'
-        path_deps_dev = project_path / 'environment.dev.yml'
     else:
         path_deps = project_path / 'requirements.txt'
-        path_deps_dev = project_path / 'requirements.dev.txt'
 
     if empty:
         if package:
@@ -228,10 +242,8 @@ def cli(project_path, package=False, conda=False, empty=False):
             path_to_empty = _resources_path('empty')
             shutil.copy(path_to_empty / 'no-package.yaml', path_pipeline)
 
-    click.secho(f'\nDone. Pipeline declaration: {path_pipeline!s}\n',
-                fg='green')
+    click.secho(f'\nDone. Pipeline at: {path_pipeline!s}\n', fg='green')
     click.echo('Next steps:\n')
-    click.secho(f'1. Add deployment dependencies to {path_deps!s}\n'
-                f'2. Add development dependencies to {path_deps_dev!s}\n'
-                f'3. Move to {project_path!s}/ and setup the environment'
-                ' with: ploomber install')
+    click.secho(f'Add dependencies to {path_deps!s}\n\n'
+                f'$ cd {project_path!s}\n\n'
+                '$ ploomber install (setup environment)\n')
