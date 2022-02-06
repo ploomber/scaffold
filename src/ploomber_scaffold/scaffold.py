@@ -192,11 +192,9 @@ def cli(project_path, package=False, conda=False, empty=False):
                                 'choose another.' % pkg_name)
 
     if project_path.is_dir() and len(os.listdir(project_path)):
-        raise click.ClickException(
-            f'{str(project_path)!r} is a non-empty directory')
+        raise ScaffoldError(f'{str(project_path)!r} is a non-empty directory')
     elif project_path.is_file():
-        raise click.ClickException(
-            f'{str(project_path)!r} is an existing file')
+        raise ScaffoldError(f'{str(project_path)!r} is an existing file')
 
     copy_template(project_path, package=package, conda=conda)
 
