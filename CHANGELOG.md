@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 0.2.7dev
+
 ## 0.2.6 (2022-02-08)
 * Updates `fit.py` task in sample pipeline to use the percent format (`# %%`)
 
