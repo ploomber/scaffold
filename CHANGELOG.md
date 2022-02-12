@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.2.7dev
+## 0.3 (2022-02-11)
 * Updates `README.md` template
 * Automatically determine what dependency file to use if `conda` is installed
 
