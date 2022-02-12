@@ -170,7 +170,7 @@ def _get_error_message(package, pkg_name):
             f'choose another. {_get_instructions(package)}')
 
 
-def cli(project_path, package=False, conda=False, empty=False):
+def cli(project_path, package=False, conda=None, empty=False):
     """
     Scaffolds a project
 
@@ -183,15 +183,23 @@ def cli(project_path, package=False, conda=False, empty=False):
         Whether to create a packaged project (with a setup.py file and
         versioneer) or a simple layout
 
-    conda : bool, default=False
+    conda : bool, default=None
         If True, it adds a conda environment.yml file otherwise
-        requirements.txt
+        requirements.txt. If None, it uses environment.yml if conda is
+        installed
 
     empty : bool, default=False
         If True, it doesn't add sample tasks
     """
     project_path = None if not project_path else Path(project_path)
     check_name = is_valid_package_name if package else is_valid_project_name
+
+    if conda is None:
+        conda = True if shutil.which('conda') else False
+
+        if conda:
+            path_to_environment = str(project_path / "environment.yml")
+            click.echo(f'conda detected, generating {path_to_environment}')
 
     if project_path is None:
         _echo_instructions(package=package, with_prompt=True)

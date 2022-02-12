@@ -141,3 +141,29 @@ def test_shows_instructions_if_incorrect_name_passed(monkeypatch,
                      empty=True)
 
     mock.assert_called_once()
+
+
+def test_determines_what_reqs_file_to_use_if_conda_installed(
+        monkeypatch, tmp_directory):
+    monkeypatch.setattr(scaffold.shutil, 'which', Mock())
+
+    scaffold.cli(project_path='my-project',
+                 conda=None,
+                 package=False,
+                 empty=True)
+
+    assert Path('my-project', 'environment.yml').exists()
+    assert not Path('my-project', 'requirements.txt').exists()
+
+
+def test_determines_what_reqs_file_to_use_if_conda_not_installed(
+        monkeypatch, tmp_directory):
+    monkeypatch.setattr(scaffold.shutil, 'which', lambda _: None)
+
+    scaffold.cli(project_path='my-project',
+                 conda=None,
+                 package=False,
+                 empty=True)
+
+    assert Path('my-project', 'requirements.txt').exists()
+    assert not Path('my-project', 'environment.yml').exists()
