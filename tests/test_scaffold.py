@@ -56,8 +56,6 @@ def test_with_conda(tmp_directory, package):
     os.chdir('myproj')
     readme = Path('README.md').read_text()
     conda_msg = ('# activate conda environment\n' 'conda activate myproj')
-
-    assert 'conda env create --file environment.yml' in readme
     assert 'Requires [Miniconda]' in readme
     assert conda_msg in readme
 
@@ -69,7 +67,6 @@ def test_with_pip(tmp_directory, package):
     readme = Path('README.md').read_text()
 
     assert 'Requires [Miniconda]' not in readme
-    assert 'python -m venv {path-to-venv}' in readme
     assert 'source {path-to-venv}/bin/activate' in readme
 
 

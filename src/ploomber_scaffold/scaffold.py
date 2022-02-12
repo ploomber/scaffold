@@ -193,13 +193,10 @@ def cli(project_path, package=False, conda=None, empty=False):
     """
     project_path = None if not project_path else Path(project_path)
     check_name = is_valid_package_name if package else is_valid_project_name
+    print_conda_detected = conda is None
 
     if conda is None:
         conda = True if shutil.which('conda') else False
-
-        if conda:
-            path_to_environment = str(project_path / "environment.yml")
-            click.echo(f'conda detected, generating {path_to_environment}')
 
     if project_path is None:
         _echo_instructions(package=package, with_prompt=True)
@@ -234,6 +231,9 @@ def cli(project_path, package=False, conda=None, empty=False):
     else:
         path_deps = project_path / 'requirements.txt'
 
+    if print_conda_detected and conda:
+        click.echo(f'conda detected, generating {str(path_deps)}')
+
     if empty:
         if package:
             pkg_root = project_path / 'src' / pkg_name
@@ -250,8 +250,10 @@ def cli(project_path, package=False, conda=None, empty=False):
             path_to_empty = _resources_path('empty')
             shutil.copy(path_to_empty / 'no-package.yaml', path_pipeline)
 
-    click.secho(f'\nDone. Pipeline at: {path_pipeline!s}\n', fg='green')
+    click.secho(f'\nPipeline at: {path_pipeline!s}\n')
     click.echo('Next steps:\n')
-    click.secho(f'Add dependencies to {path_deps!s}\n\n'
-                f'$ cd {project_path!s}\n\n'
-                '$ ploomber install (setup environment)\n')
+    click.secho(
+        f'Add dependencies to {path_deps!s}\n\n'
+        f'$ cd {project_path!s}\n\n'
+        '$ ploomber install\n',
+        fg='green')

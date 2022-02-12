@@ -167,12 +167,3 @@ def test_check_layout(tmp_directory, conda):
     scaffold.cli(project_path='myproj', conda=conda, package=True)
     os.chdir('myproj')
     assert Path('src/myproj/pipeline.yaml').is_file()
-
-
-@pytest.mark.parametrize('conda', [True, False])
-def test_readme_includes_pip_install_command(tmp_directory, conda):
-    scaffold.cli(project_path='myproj', conda=conda, package=True)
-    os.chdir('myproj')
-    readme = Path('README.md').read_text()
-
-    assert 'pip install --editable .' in readme

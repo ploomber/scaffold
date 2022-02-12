@@ -4,39 +4,29 @@
 Requires [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
 {%- endif %}
 
-## Setup development environment
+## Setup
 
 ```sh
-# configure dev environment
-ploomber install
+# NOTE: if running ploomber <0.16, remove the --create-env argument
+ploomber install --create-env
 
-{% if conda %}
-# ...or use conda directly
-conda env create --file environment.yml
-
+{%- if conda %}
 # activate conda environment
 conda activate package_name
 {% else %}
-# ...or use venv directly (choose a path-to-venv)
-python -m venv {path-to-venv}
-
 # activate environment (unix)
 source {path-to-venv}/bin/activate
 # activate environment (windows cmd.exe)
 {path-to-venv}\Scripts\activate.bat
 # activate environment (windows PowerShell)
 {path-to-venv}\Scripts\Activate.ps1
-
-# the install dependencies
-pip install --requirement requirements.txt
-{% endif %}
-
-{%- if package %}
-# after activating your environment, install your project with
-pip install --editable .
-# note: you can skip this step if using "ploomber install"
-{% endif -%}
+{%- endif %}
 ```
+
+## Code editor integration
+
+* If using Jupyter, [click here](https://docs.ploomber.io/en/latest/user-guide/jupyter.html)
+* If using VSCode, PyCharm, or Spyder, [click here](https://docs.ploomber.io/en/latest/user-guide/editors.html)
 
 {% if package %}
 ## Testing
@@ -50,11 +40,8 @@ pytest
 
 ```sh
 ploomber build
-
-# start an interactive session
-ploomber interact
 ```
 
-## Exporting to other systems
+## Help
 
-[soopervisor](https://soopervisor.readthedocs.io/) allows you to run ploomber projects in other environments (Kubernetes, AWS Batch, AWS Lambda and Airflow). Check out the docs to learn more.
+* Need help? [Ask us anything on Slack!](https://ploomber.io/community)
