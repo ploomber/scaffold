@@ -1,6 +1,8 @@
 # CHANGELOG
 
 ## 0.2.7dev
+* Updates `README.md` template
+* Automatically determine what dependency file to use if `conda` is installed
 
 ## 0.2.6 (2022-02-08)
 * Updates `fit.py` task in sample pipeline to use the percent format (`# %%`)
