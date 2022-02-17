@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.3.1dev
+## 0.3.1 (2022-02-16)
 * Sample `environment.yml` no longer has a hardcoded Python dependency
 
 ## 0.3 (2022-02-11)
@@ -15,7 +15,7 @@
 * Clearer error and confirmation messages
 
 ## 0.2.4 (2021-09-09)
-* Fixes `PermissionError` on Windows (#5)
+* Fixes `PermissionError` on Windows ([#5](https://github.com/ploomber/scaffold/issues/5))
 
 ## 0.2.3 (2021-09-02)
 
