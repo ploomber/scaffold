@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## 0.3.1dev
+* Sample `environment.yml` no longer has a hardcoded Python dependency
 
 ## 0.3 (2022-02-11)
 * Updates `README.md` template
