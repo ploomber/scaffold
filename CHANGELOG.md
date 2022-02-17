@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 0.3.2dev
+
 ## 0.3.1 (2022-02-16)
 * Sample `environment.yml` no longer has a hardcoded Python dependency
 
