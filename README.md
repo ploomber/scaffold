@@ -4,6 +4,9 @@
 ![CI macOS](https://github.com/ploomber/scaffold/workflows/CI%20macOS/badge.svg)
 ![CI Windows](https://github.com/ploomber/scaffold/workflows/CI%20Windows/badge.svg)
 
+> [!TIP]
+> Deploy AI apps for free on [Ploomber Cloud!](https://ploomber.io/?utm_medium=github&utm_source=scaffold)
+
 Scaffold creates a complete structure for Data Science projects.
 
 ## Usage
